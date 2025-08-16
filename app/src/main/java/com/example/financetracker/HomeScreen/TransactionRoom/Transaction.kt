@@ -1,7 +1,9 @@
-package com.example.financetracker.HomeScreen.Transaction
+package com.example.financetracker.HomeScreen.TransactionRoom
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Entity(tableName = "transactions")
 data class Transaction(
     @PrimaryKey(autoGenerate = true) val id : Int,
     val amount: Double,
