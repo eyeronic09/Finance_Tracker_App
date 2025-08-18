@@ -16,12 +16,14 @@ import kotlinx.coroutines.launch
  * in the amount. The getter method for the amount property returns the state flow as a StateFlow.
  * This allows us to easily observe changes in the amount using the `collect` function.
  */
-class TranscationViewModel(private val transcationDao: TranscationDao) : ViewModel() {
+class TranscationViewModel(
+    private val transcationDao: TranscationDao
+) : ViewModel() {
 
     /**
      * `allTransactions` is a state flow that represents the list of all transactions in the database.
      * It is initialized with an empty list as the initial value, and it is updated whenever the database
-     * changes. The flow is shared while there are active subscribers, and it is refreshed every 2 seconds.
+     * changes. The flow is shared while there are active subscribers, and it is refreshed every 5 seconds.
      *
      * The `map` function is used to transform the flow of transactions into a flow of lists of transactions.
      * This transformation is necessary because the `getAll` function returns a flow of transactions,
@@ -31,10 +33,10 @@ class TranscationViewModel(private val transcationDao: TranscationDao) : ViewMod
      * value in memory.
      */
     val allTransactions: StateFlow<List<Transaction>> = transcationDao.getAll()
-        .map { transactions -> transactions.toList() }
+        .map { it }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(2000),
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
 

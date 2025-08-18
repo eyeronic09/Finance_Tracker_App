@@ -38,12 +38,18 @@ android {
     buildFeatures {
         compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
 }
 
 dependencies {
-
-    val room_version = "2.7.2"
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
+    implementation(libs.material3)
+    val room_version = "2.6.1"
+    implementation("androidx.navigation:navigation-ui:2.9.3")
+    val nav_version = "2.9.3"
+    implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.room:room-runtime:$room_version")
 
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
@@ -53,6 +59,7 @@ dependencies {
     // If this project only uses Java source, use the Java annotationProcessor
     // No additional plugins are necessary
     annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:${room_version}")
     // Jetpack Compose integration nav
     implementation("androidx.navigation:navigation-ui:2.9.3")
     implementation(libs.androidx.core.ktx)

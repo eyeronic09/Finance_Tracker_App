@@ -8,13 +8,14 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
-
 @Dao
-interface TranscationDao  {
+interface TranscationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(transaction: Transaction)
+
     @Delete
     suspend fun delete(transaction: Transaction)
+
     @Update
     suspend fun update(transaction: Transaction)
 

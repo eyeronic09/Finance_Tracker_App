@@ -7,38 +7,60 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModelProvider
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.financetracker.HomeScreen.AddScreen
 import com.example.financetracker.HomeScreen.HomeScreen
 import com.example.financetracker.HomeScreen.TransactionRoom.TransactionDatabase
 import com.example.financetracker.HomeScreen.TranscationViewModel
 import com.example.financetracker.HomeScreen.TranscationViewModelFactory
+import com.example.financetracker.navigation.SealedScreen
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Get the database instance
-        val database = TransactionDatabase.getDatabase(this)
-        
-        // Get the ViewModel with the factory
-        val viewModel = ViewModelProvider(
-            this,
-            TranscationViewModelFactory(database.transactionDao())
-        )[TranscationViewModel::class.java]
-
         enableEdgeToEdge()
         setContent {
             FinanceTrackerTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen(viewModel = viewModel)
+                    AppNav()
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun AppNav() {
+    val navController = rememberNavController()
+    val context = LocalContext.current
+    val database = TransactionDatabase.getDatabase(context)
+    val viewModel: TranscationViewModel = viewModel(
+        factory = TranscationViewModelFactory(database.transactionDao())
+    )
+    
+    NavHost(
+        navController = navController,
+        startDestination = SealedScreen.HomeScreen.route
+    ) {
+        composable(SealedScreen.HomeScreen.route) {
+            HomeScreen(viewModel = viewModel, navController = navController)
+        }
+        composable(SealedScreen.AddScreen.route) {
+            AddScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

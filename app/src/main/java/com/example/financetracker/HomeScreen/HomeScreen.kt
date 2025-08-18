@@ -16,14 +16,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.navArgument
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.component.BalanceCard
-
+import com.example.financetracker.navigation.SealedScreen
 
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun HomeScreen(viewModel: TranscationViewModel) {
+fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
     val transaction by viewModel.allTransactions.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
@@ -33,7 +35,10 @@ fun HomeScreen(viewModel: TranscationViewModel) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {}
+                onClick = {
+                    navController.navigate(SealedScreen.AddScreen)
+                }
+
             ) {
                 Icon(Icons.Default.Add , contentDescription = null)
             }
@@ -46,7 +51,6 @@ fun HomeScreen(viewModel: TranscationViewModel) {
                 BalanceCard(transaction = balanceCard)
             }
         }
-
     }
 
 }
