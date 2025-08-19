@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
+
 }
 
 android {
@@ -48,6 +49,7 @@ dependencies {
     implementation(libs.material3)
     val room_version = "2.6.1"
     implementation("androidx.navigation:navigation-ui:2.9.3")
+
     val nav_version = "2.9.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.room:room-runtime:$room_version")
@@ -61,7 +63,8 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:${room_version}")
     // Jetpack Compose integration nav
-    implementation("androidx.navigation:navigation-ui:2.9.3")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")// or the latest version
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,4 +80,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }

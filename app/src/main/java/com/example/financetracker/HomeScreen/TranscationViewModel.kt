@@ -1,11 +1,15 @@
 package com.example.financetracker.HomeScreen
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -19,6 +23,13 @@ import kotlinx.coroutines.launch
 class TranscationViewModel(
     private val transcationDao: TranscationDao
 ) : ViewModel() {
+    private val _amount  = MutableStateFlow("")
+    var amount : StateFlow<String> = _amount.asStateFlow()
+    fun numfleid(newAmount: String){
+        _amount.value = newAmount
+        Log.d("Amount" , "$_amount")
+    }
+
 
     /**
      * `allTransactions` is a state flow that represents the list of all transactions in the database.
@@ -39,6 +50,7 @@ class TranscationViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
 
     /**
      * Adds a transaction to the database.

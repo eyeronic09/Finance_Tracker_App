@@ -36,7 +36,7 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(SealedScreen.AddScreen)
+                    navController.navigate(SealedScreen.AddScreen.route)
                 }
 
             ) {
