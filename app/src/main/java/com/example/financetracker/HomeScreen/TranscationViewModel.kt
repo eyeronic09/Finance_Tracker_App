@@ -1,7 +1,6 @@
 package com.example.financetracker.HomeScreen
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
@@ -23,12 +22,21 @@ import kotlinx.coroutines.launch
 class TranscationViewModel(
     private val transcationDao: TranscationDao
 ) : ViewModel() {
+
+    private val _selectedOption = MutableStateFlow<String?>(null)
+    val selectedOption: StateFlow<String?> = _selectedOption
+
+    fun onOptionSelected(option: String){
+        _selectedOption.value = option
+    }
+
     private val _amount  = MutableStateFlow("")
     var amount : StateFlow<String> = _amount.asStateFlow()
-    fun numfleid(newAmount: String){
+    fun numField(newAmount: String){
         _amount.value = newAmount
         Log.d("Amount" , "$_amount")
     }
+
 
 
     /**
@@ -54,14 +62,30 @@ class TranscationViewModel(
 
     /**
      * Adds a transaction to the database.
-     *
-     * @param transaction The transaction to be added.
      */
-    fun addTransaction(transaction: Transaction) {
+
+    fun addTransaction() {
         viewModelScope.launch {
-            transcationDao.insert(transaction)
+            try {
+                val amountValue = _amount.value.toDoubleOrNull()
+                val type = _selectedOption.value
+
+                if (amountValue != null && amountValue > 0 && type != null) {
+                    val newTransaction = Transaction(
+                        amount = amountValue,
+                        type = type,
+                        date = System.currentTimeMillis(),
+                    )
+                    transcationDao.insert(newTransaction)
+                    _amount.value = ""
+                    _selectedOption.value = null
+                }
+            } catch (e: Exception) {
+                Log.e("TranscationViewModel", "Error adding transaction", e)
+            }
         }
     }
+
 
     /**
      * Deletes a transaction from the database.

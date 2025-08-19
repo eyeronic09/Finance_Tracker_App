@@ -8,6 +8,5 @@ data class Transaction(
     @PrimaryKey(autoGenerate = true) val id : Int = 0,
     val amount: Double,
     val type : String,
-    val date : String ,
-    val category: String //Income or expense
+    val date : Long ,
 )
