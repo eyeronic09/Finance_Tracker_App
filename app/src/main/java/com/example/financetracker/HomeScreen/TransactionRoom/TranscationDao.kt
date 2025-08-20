@@ -22,6 +22,4 @@ interface TranscationDao {
     @Query("SELECT * FROM transactions ORDER BY date DESC")
     fun getAll(): Flow<List<Transaction>>
 
-    @Query("SELECT balance FROM transactions ORDER BY id DESC LIMIT 1")
-    fun getLatestBalance(): Flow<Double?>
 }

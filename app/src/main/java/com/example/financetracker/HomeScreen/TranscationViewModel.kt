@@ -24,8 +24,7 @@ import kotlinx.coroutines.launch
 class TranscationViewModel(
     private val transcationDao: TranscationDao
 ) : ViewModel() {
-    private val _balance = MutableStateFlow(0.0)
-    val balance: Flow<Double?> = transcationDao.getLatestBalance()
+
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
 
@@ -49,7 +48,15 @@ class TranscationViewModel(
             initialValue = emptyList()
         )
 
-
+    val balance: StateFlow<Double> = allTransactions.map { transactions ->
+        transactions.sumOf { transaction ->
+            if (transaction.type == "Income") transaction.amount else -transaction.amount
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = 0.0
+    )
     /**
      * Adds a transaction to the database.
      */
@@ -62,17 +69,10 @@ class TranscationViewModel(
 
 
                 if (amountValue != null && amountValue > 0 && type != null) {
-                    val balance = _balance.value
-                    val newBalance = if(type == "income"){
-                        balance + amountValue
-                    }else{
-                        balance - amountValue
-                    }
                     val newTransaction = Transaction(
                         amount = amountValue,
                         type = type,
                         date = System.currentTimeMillis(),
-                        balance = newBalance
                     )
                     Log.d("Balance" , "$newTransaction")
                     transcationDao.insert(newTransaction)

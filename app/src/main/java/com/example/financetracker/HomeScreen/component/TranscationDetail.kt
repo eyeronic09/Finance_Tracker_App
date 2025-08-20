@@ -33,7 +33,7 @@ private fun prevs() {
             amount = 121.9,
             type = "Income",
             date = 123 ,
-            balance = 100.0
+
         )
     )
 }
