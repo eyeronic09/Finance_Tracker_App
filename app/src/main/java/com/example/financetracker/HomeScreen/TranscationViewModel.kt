@@ -22,6 +22,9 @@ import kotlinx.coroutines.launch
 class TranscationViewModel(
     private val transcationDao: TranscationDao
 ) : ViewModel() {
+    private val _balance = MutableStateFlow(0.0)
+    val balance: StateFlow<Double> = _balance.asStateFlow()
+
 
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
@@ -32,25 +35,12 @@ class TranscationViewModel(
 
     private val _amount  = MutableStateFlow("")
     var amount : StateFlow<String> = _amount.asStateFlow()
-    fun numField(newAmount: String){
+    fun numField(newAmount: String) {
         _amount.value = newAmount
-        Log.d("Amount" , "$_amount")
+        Log.d("Amount", newAmount)
     }
 
 
-
-    /**
-     * `allTransactions` is a state flow that represents the list of all transactions in the database.
-     * It is initialized with an empty list as the initial value, and it is updated whenever the database
-     * changes. The flow is shared while there are active subscribers, and it is refreshed every 5 seconds.
-     *
-     * The `map` function is used to transform the flow of transactions into a flow of lists of transactions.
-     * This transformation is necessary because the `getAll` function returns a flow of transactions,
-     * and we want to work with a flow of lists of transactions.
-     *
-     * The `stateIn` function is used to collect the flow of lists of transactions and store the latest
-     * value in memory.
-     */
     val allTransactions: StateFlow<List<Transaction>> = transcationDao.getAll()
         .map { it }
         .stateIn(
@@ -67,16 +57,25 @@ class TranscationViewModel(
     fun addTransaction() {
         viewModelScope.launch {
             try {
+                val balance = _balance.value
                 val amountValue = _amount.value.toDoubleOrNull()
                 val type = _selectedOption.value
 
                 if (amountValue != null && amountValue > 0 && type != null) {
+                    val newBlance = if(type == "income"){
+                        balance + amountValue
+                    }else{
+                        balance - amountValue
+                    }
                     val newTransaction = Transaction(
                         amount = amountValue,
                         type = type,
                         date = System.currentTimeMillis(),
+                        balance = newBlance
                     )
+                    Log.d("Balance" , "$newTransaction")
                     transcationDao.insert(newTransaction)
+
                     _amount.value = ""
                     _selectedOption.value = null
                 }
@@ -105,7 +104,7 @@ class TranscationViewModel(
      */
     fun updateTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            transcationDao.update(transaction)
+            transcationDao.updatetoBalance(transaction)
         }
     }
 }

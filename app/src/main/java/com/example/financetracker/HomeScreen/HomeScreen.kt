@@ -1,5 +1,6 @@
 package com.example.financetracker.HomeScreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,11 +16,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.navArgument
-import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.component.BalanceCard
+import com.example.financetracker.HomeScreen.component.TranscationsDetail
 import com.example.financetracker.navigation.SealedScreen
 
 
@@ -27,6 +28,7 @@ import com.example.financetracker.navigation.SealedScreen
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
     val transaction by viewModel.allTransactions.collectAsStateWithLifecycle()
+    val bal by viewModel.balance.collectAsStateWithLifecycle()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -44,12 +46,20 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
             }
         }
     ) { innerPadding ->
+
         LazyColumn(modifier = Modifier
             .fillMaxWidth()
             .padding(innerPadding)) {
-            items(transaction){ balanceCard ->
-                BalanceCard(transaction = balanceCard)
+            item {
+                BalanceCard(
+                    balance = bal,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
             }
+            items(transaction){ transaction ->
+                TranscationsDetail(transaction = transaction)
+            }
+            Log.d("BalanceHome" , "$transaction")
         }
     }
 

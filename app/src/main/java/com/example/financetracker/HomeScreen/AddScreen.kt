@@ -51,6 +51,7 @@ fun AddScreen(
 
     val amount by viewModel.amount.collectAsState(initial = "")
     val selectedOption by viewModel.selectedOption.collectAsState()
+
     Scaffold(
         topBar = {
           TopAppBar(
@@ -59,7 +60,7 @@ fun AddScreen(
                   IconButton(onClick = {navController.popBackStack()}) {
                       Icon(
                           imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                          contentDescription = "Localized description"
+                          contentDescription = null
                       )
                   }
               },
@@ -74,8 +75,7 @@ fun AddScreen(
             onOptionSelected = { viewModel.onOptionSelected(it) },
             onAddClick = {
                 if (amount.isNotBlank() && selectedOption != null) {
-                    viewModel.addTransaction()
-
+                   viewModel.addTransaction()
                 }
             },
 

@@ -12,7 +12,7 @@ import com.example.financetracker.HomeScreen.TransactionRoom.Transaction  // Mak
 
 
 @Composable
-fun BalanceCard(transaction: Transaction) {
+fun TranscationsDetail(transaction: Transaction) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -27,12 +27,13 @@ fun BalanceCard(transaction: Transaction) {
 @Preview
 @Composable
 private fun prevs() {
-    BalanceCard(
+    TranscationsDetail(
         transaction = Transaction(
             1,
             amount = 121.9,
             type = "Income",
-            date = 123
+            date = 123 ,
+            balance = 100.0
         )
     )
 }
