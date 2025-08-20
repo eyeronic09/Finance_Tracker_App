@@ -28,7 +28,7 @@ import com.example.financetracker.navigation.SealedScreen
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
     val transaction by viewModel.allTransactions.collectAsStateWithLifecycle()
-    val bal by viewModel.balance.collectAsStateWithLifecycle()
+    val currentBalance by viewModel.balance.collectAsStateWithLifecycle(initialValue = 0.0)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,14 +52,14 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
             .padding(innerPadding)) {
             item {
                 BalanceCard(
-                    balance = bal,
+                    balance = currentBalance?: 0.0,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
             items(transaction){ transaction ->
                 TranscationsDetail(transaction = transaction)
             }
-            Log.d("BalanceHome" , "$transaction")
+            Log.d("BalanceHome" , "$currentBalance")
         }
     }
 

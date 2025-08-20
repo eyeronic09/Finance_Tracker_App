@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,9 +25,7 @@ class TranscationViewModel(
     private val transcationDao: TranscationDao
 ) : ViewModel() {
     private val _balance = MutableStateFlow(0.0)
-    val balance: StateFlow<Double> = _balance.asStateFlow()
-
-
+    val balance: Flow<Double?> = transcationDao.getLatestBalance()
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
 
@@ -57,12 +57,13 @@ class TranscationViewModel(
     fun addTransaction() {
         viewModelScope.launch {
             try {
-                val balance = _balance.value
                 val amountValue = _amount.value.toDoubleOrNull()
                 val type = _selectedOption.value
 
+
                 if (amountValue != null && amountValue > 0 && type != null) {
-                    val newBlance = if(type == "income"){
+                    val balance = _balance.value
+                    val newBalance = if(type == "income"){
                         balance + amountValue
                     }else{
                         balance - amountValue
@@ -71,16 +72,16 @@ class TranscationViewModel(
                         amount = amountValue,
                         type = type,
                         date = System.currentTimeMillis(),
-                        balance = newBlance
+                        balance = newBalance
                     )
                     Log.d("Balance" , "$newTransaction")
                     transcationDao.insert(newTransaction)
-
+                    // reset
                     _amount.value = ""
                     _selectedOption.value = null
                 }
             } catch (e: Exception) {
-                Log.e("TranscationViewModel", "Error adding transaction", e)
+                Log.d("TranscationViewModel", "Error adding transaction", e)
             }
         }
     }
