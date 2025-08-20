@@ -70,6 +70,7 @@ fun addContent(
             modifier = Modifier.fillMaxWidth(),
             onClick = onAddClick,
             enabled = amount.isNotBlank() && selectedOption != null
+
         ) {
             Text("Add")
         }

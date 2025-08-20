@@ -20,7 +20,6 @@ fun BalanceCard(transaction: Transaction) {
             Text("Amount: ${transaction.amount}")
             Text("Type: ${transaction.type}")
             Text("Date: ${transaction.date}")
-            Text("Category: ${transaction.category}")
         }
     }
 }
@@ -33,8 +32,7 @@ private fun prevs() {
             1,
             amount = 121.9,
             type = "Income",
-            date = "2023-01-01",
-            category = "Salary"
+            date = 123
         )
     )
 }

@@ -59,7 +59,7 @@ fun AppNav() {
         composable(SealedScreen.AddScreen.route) {
             AddScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                navController = navController
             )
         }
     }
