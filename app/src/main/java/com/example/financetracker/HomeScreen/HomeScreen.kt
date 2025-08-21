@@ -57,7 +57,10 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                 )
             }
             items(transaction){ transaction ->
-                TranscationsDetail(transaction = transaction)
+                TranscationsDetail(
+                    transaction = transaction,
+                    onClick = {viewModel.deleteTransaction(transaction)}
+                )
             }
             Log.d("BalanceHome" , "$currentBalance")
         }
