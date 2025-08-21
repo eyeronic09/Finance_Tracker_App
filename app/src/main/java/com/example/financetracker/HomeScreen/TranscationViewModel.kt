@@ -1,12 +1,11 @@
 package com.example.financetracker.HomeScreen
 
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
 /**
  * The TranscationViewModel is responsible for managing the state of the amount for transactions.
@@ -22,11 +22,14 @@ import kotlinx.coroutines.launch
  * This allows us to easily observe changes in the amount using the `collect` function.
  */
 class TranscationViewModel(
-    private val transcationDao: TranscationDao
+    private val transactionDao: TranscationDao
 ) : ViewModel() {
 
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
 
     fun onOptionSelected(option: String){
         _selectedOption.value = option
@@ -40,51 +43,67 @@ class TranscationViewModel(
     }
 
 
-    val allTransactions: StateFlow<List<Transaction>> = transcationDao.getAll()
+    val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
         .map { it }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
-
-    val balance: StateFlow<Double> = allTransactions.map { transactions ->
-        transactions.sumOf { transaction ->
-            if (transaction.type == "Income") transaction.amount else -transaction.amount
+    val balance : StateFlow<Double> = allTransactions.map { transactions ->
+        transactions.fold(0.0){ acc, transaction ->
+            val amount = transaction.amount
+            if (transaction.type.equals("income" , ignoreCase = true)){
+                acc + amount
+            }else{
+                acc - amount
+            }
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = 0.0
-    )
+    }.stateIn(scope = viewModelScope , started = SharingStarted.WhileSubscribed(2000), initialValue = 0.0)
+
+
+
+
     /**
      * Adds a transaction to the database.
      */
 
+    // --- Actions ---
     fun addTransaction() {
         viewModelScope.launch {
             try {
                 val amountValue = _amount.value.toDoubleOrNull()
                 val type = _selectedOption.value
 
-
-                if (amountValue != null && amountValue > 0 && type != null) {
-                    val newTransaction = Transaction(
-                        amount = amountValue,
-                        type = type,
-                        date = System.currentTimeMillis(),
-                    )
-                    Log.d("Balance" , "$newTransaction")
-                    transcationDao.insert(newTransaction)
-                    // reset
-                    _amount.value = ""
-                    _selectedOption.value = null
+                if (amountValue == null || amountValue <= 0.0) {
+                    _errorMessage.value = "Enter a valid amount"
+                    return@launch
                 }
+                if (type == null) {
+                    _errorMessage.value = "Select income or expense"
+                    return@launch
+                }
+
+                val newTransaction = Transaction(
+                    amount = amountValue,
+                    type = type,
+                    date = System.currentTimeMillis()
+                )
+
+                transactionDao.insert(newTransaction)
+
+                // reset inputs
+                _amount.value = ""
+                _selectedOption.value = null
+                _errorMessage.value = null
+
             } catch (e: Exception) {
-                Log.d("TranscationViewModel", "Error adding transaction", e)
+                _errorMessage.value = "Error saving transaction"
+                Log.e("TransactionViewModel", "Error adding transaction", e)
             }
         }
     }
+
 
 
     /**
@@ -94,7 +113,7 @@ class TranscationViewModel(
      */
     fun deleteTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            transcationDao.delete(transaction)
+            transactionDao.delete(transaction)
         }
     }
 
@@ -105,7 +124,7 @@ class TranscationViewModel(
      */
     fun updateTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            transcationDao.updatetoBalance(transaction)
+            transactionDao.updatetoBalance(transaction)
         }
     }
 }
