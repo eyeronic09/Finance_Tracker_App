@@ -92,7 +92,7 @@ class TranscationViewModel(
                 val amountValue = _amount.value.toDoubleOrNull()
                 val type = _selectedOption.value
                 val date = LocalDate.now()
-                val category = _category.value ?: "Null"
+                val category = _category.value ?: "other"
 
                 if (amountValue == null || amountValue <= 0.0) {
                     _errorMessage.value = "Enter a valid amount"
@@ -115,6 +115,7 @@ class TranscationViewModel(
                 // reset inputs
                 _amount.value = ""
                 _selectedOption.value = null
+                _category.value = null
                 _errorMessage.value = null
 
             } catch (e: Exception) {

@@ -60,33 +60,30 @@ fun AddScreen(
 
     Scaffold(
         topBar = {
-          TopAppBar(
-              title = { Text("Add Screen") },
-              navigationIcon = {
-                  IconButton(onClick = {navController.popBackStack()}) {
-                      Icon(
-                          imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                          contentDescription = null
-                      )
-                  }
-              },
+            TopAppBar(
+                title = { Text("Add Screen") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                },
 
-          )
+                )
         },
-    ) {  innerPadding ->
+    ) { innerPadding ->
         addContent(
             amount = amount,
-            category = categorySelected,
-            selectedOption = selectedOption,
+            transactionType = selectedOption,
+            selectedCategory = categorySelected,
             onAmountChange = { viewModel.numField(it) },
-            onOptionSelected = { viewModel.onOptionSelected(it) },
-            onAddClick = {
-                if (amount.isNotBlank() && selectedOption != null) {
-                   viewModel.addTransaction()
-                }
-            },
-            onCategorySelected = {viewModel.onSelectedCategory(it)},
+            onTransactionTypeSelected = {viewModel.onOptionSelected(it)},
+            onCategorySelected = { viewModel.onSelectedCategory(it) },
+            onAddClick = { viewModel.addTransaction() },
             modifier = Modifier.padding(innerPadding)
         )
     }
+
 }
