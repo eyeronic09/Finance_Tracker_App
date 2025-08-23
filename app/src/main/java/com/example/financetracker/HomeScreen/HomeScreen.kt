@@ -52,7 +52,7 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
             .padding(innerPadding)) {
             item {
                 BalanceCard(
-                    balance = currentBalance?: 0.0,
+                    balance = currentBalance,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }

@@ -54,9 +54,7 @@ private fun prevs() {
             1,
             amount = 121.9,
             type = "Income",
-            date = 123,
-
-            ),
+            date = "32"           ),
         onClick = {}
     )
 }

@@ -1,6 +1,8 @@
 package com.example.financetracker.HomeScreen
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import kotlin.math.absoluteValue
 
 /**
@@ -27,8 +32,11 @@ class TranscationViewModel(
 
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+
 
 
     fun onOptionSelected(option: String){
@@ -69,11 +77,13 @@ class TranscationViewModel(
      */
 
     // --- Actions ---
+    @RequiresApi(Build.VERSION_CODES.O)
     fun addTransaction() {
         viewModelScope.launch {
             try {
                 val amountValue = _amount.value.toDoubleOrNull()
                 val type = _selectedOption.value
+                val date = LocalDate.now()
 
                 if (amountValue == null || amountValue <= 0.0) {
                     _errorMessage.value = "Enter a valid amount"
@@ -87,7 +97,7 @@ class TranscationViewModel(
                 val newTransaction = Transaction(
                     amount = amountValue,
                     type = type,
-                    date = System.currentTimeMillis()
+                    date = date.toString()
                 )
 
                 transactionDao.insert(newTransaction)
