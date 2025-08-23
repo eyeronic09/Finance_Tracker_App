@@ -62,8 +62,7 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                     onClick = {viewModel.deleteTransaction(transaction)}
                 )
             }
-            Log.d("BalanceHome" , "$currentBalance")
+            Log.d("BalanceHome" , "$transaction")
         }
     }
-
 }

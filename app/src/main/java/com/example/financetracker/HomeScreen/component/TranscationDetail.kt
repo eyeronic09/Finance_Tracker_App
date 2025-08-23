@@ -28,6 +28,7 @@ fun TranscationsDetail(transaction: Transaction , onClick: () -> Unit) {
             Text("Amount: ${transaction.amount}")
             Text("Type: ${transaction.type}")
             Text("Date: ${transaction.date}")
+            Text("category${transaction.category}")
         }
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
@@ -54,7 +55,8 @@ private fun prevs() {
             1,
             amount = 121.9,
             type = "Income",
-            date = "32"           ),
+            date = "32"   ,
+            "we"),
         onClick = {}
     )
 }

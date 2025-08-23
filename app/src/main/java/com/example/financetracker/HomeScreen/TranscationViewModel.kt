@@ -33,6 +33,14 @@ class TranscationViewModel(
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
 
+    private val _category = MutableStateFlow<String?>(null)
+    val selectedCategory : StateFlow<String?> = _category
+
+    fun onSelectedCategory(category: String){
+        _category.value = category
+    }
+
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
@@ -84,6 +92,7 @@ class TranscationViewModel(
                 val amountValue = _amount.value.toDoubleOrNull()
                 val type = _selectedOption.value
                 val date = LocalDate.now()
+                val category = _category.value ?: "Null"
 
                 if (amountValue == null || amountValue <= 0.0) {
                     _errorMessage.value = "Enter a valid amount"
@@ -97,7 +106,8 @@ class TranscationViewModel(
                 val newTransaction = Transaction(
                     amount = amountValue,
                     type = type,
-                    date = date.toString()
+                    date = date.toString(),
+                    category = category
                 )
 
                 transactionDao.insert(newTransaction)

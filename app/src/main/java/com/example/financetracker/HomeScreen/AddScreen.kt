@@ -1,6 +1,8 @@
 package com.example.financetracker.HomeScreen
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,14 +35,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.room.Transaction
 import androidx.room.util.copy
 import com.example.financetracker.HomeScreen.component.addContent
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddScreen(
@@ -51,6 +56,7 @@ fun AddScreen(
 
     val amount by viewModel.amount.collectAsState(initial = "")
     val selectedOption by viewModel.selectedOption.collectAsState()
+    val categorySelected by viewModel.selectedCategory.collectAsState()
 
     Scaffold(
         topBar = {
@@ -70,6 +76,7 @@ fun AddScreen(
     ) {  innerPadding ->
         addContent(
             amount = amount,
+            category = categorySelected,
             selectedOption = selectedOption,
             onAmountChange = { viewModel.numField(it) },
             onOptionSelected = { viewModel.onOptionSelected(it) },
@@ -78,7 +85,7 @@ fun AddScreen(
                    viewModel.addTransaction()
                 }
             },
-
+            onCategorySelected = {viewModel.onSelectedCategory(it)},
             modifier = Modifier.padding(innerPadding)
         )
     }
