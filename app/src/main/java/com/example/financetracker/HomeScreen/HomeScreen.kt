@@ -1,6 +1,7 @@
 package com.example.financetracker.HomeScreen
 
 import android.util.Log
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -27,7 +29,7 @@ import com.example.financetracker.navigation.SealedScreen
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
-    val transaction by viewModel.allTransactions.collectAsStateWithLifecycle()
+    val transaction by viewModel.filteredTransactions.collectAsStateWithLifecycle()
     val currentBalance by viewModel.balance.collectAsStateWithLifecycle(initialValue = 0.0)
     Scaffold(
         topBar = {
@@ -46,6 +48,9 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
             }
         }
     ) { innerPadding ->
+        val categories = listOf("Food", "travel", "bill", "salary", "paycheck", "other")
+        val currentCategory by viewModel.selectedFilterCategory.collectAsStateWithLifecycle()
+        Log.d("selectedCategory" , "$currentCategory")
 
         LazyColumn(modifier = Modifier
             .fillMaxWidth()
@@ -55,6 +60,20 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                     balance = currentBalance,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
+            }
+            item {
+                // Filter chips row
+                Row (){
+                   categories.forEach { category ->
+                       val isSelected = currentCategory == category
+                       Log.d("isSelected" , isSelected.toString())
+                       FilterChip(
+                           selected = isSelected,
+                           onClick = { viewModel.onFilterCategory(if (isSelected) null else category) },
+                           label = { Text(category) }
+                       )
+                   }
+                }
             }
             items(transaction){ transaction ->
                 TranscationsDetail(

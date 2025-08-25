@@ -2,6 +2,7 @@ package com.example.financetracker.HomeScreen
 
 import android.os.Build
 import android.util.Log
+import android.widget.MultiAutoCompleteTextView
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -29,18 +31,41 @@ import kotlin.math.absoluteValue
 class TranscationViewModel(
     private val transactionDao: TranscationDao
 ) : ViewModel() {
+   private val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
+        .map { it }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
 
     private val _category = MutableStateFlow<String?>(null)
     val selectedCategory : StateFlow<String?> = _category
-
-    fun onSelectedCategory(category: String){
+    fun onSelectedCategory(category: String) {
         _category.value = category
     }
+    private val _selectedFilterCategory = MutableStateFlow<String?>(null)
+    val selectedFilterCategory: StateFlow<String?> = _selectedFilterCategory.asStateFlow()
 
 
+    val filteredTransactions = combine(allTransactions, selectedFilterCategory) { transactions, category ->
+        if (category == null) {
+            transactions
+        } else {
+            transactions.filter { it.category.equals(category, ignoreCase = true) }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    fun onFilterCategory(category: String?) {
+        _selectedFilterCategory.value = category
+    }
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
@@ -59,13 +84,7 @@ class TranscationViewModel(
     }
 
 
-    val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
-        .map { it }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
+
     val balance : StateFlow<Double> = allTransactions.map { transactions ->
         transactions.fold(0.0){ acc, transaction ->
             val amount = transaction.amount
