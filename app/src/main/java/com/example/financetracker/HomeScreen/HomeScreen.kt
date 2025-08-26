@@ -2,7 +2,6 @@ package com.example.financetracker.HomeScreen
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,10 +19,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.room.Database
 import com.example.financetracker.HomeScreen.component.BalanceCard
 import com.example.financetracker.HomeScreen.component.TranscationsDetail
 import com.example.financetracker.navigation.SealedScreen
@@ -53,8 +52,8 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
     ) { innerPadding ->
         val categories = listOf("Food", "travel", "bill", "salary", "paycheck", "other")
         val currentCategory by viewModel.selectedFilterCategory.collectAsStateWithLifecycle()
-        val totalIncome by viewModel.IncomeTotal.collectAsStateWithLifecycle()
-        val totalExpense by viewModel.ExpenseTotal.collectAsStateWithLifecycle()
+        val totalIncome by viewModel.incomeSum.collectAsStateWithLifecycle()
+        val totalExpense by viewModel.expenseSum.collectAsStateWithLifecycle()
         Log.d("selectedCategory", "$currentCategory")
 
         LazyColumn(
@@ -78,6 +77,7 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                 ) {
                     items(categories.size) { index ->
                         val chip = categories[index]
+                        Log.d("isSelected", chip)
                         val isSelected = currentCategory == chip
                         Log.d("isSelected", isSelected.toString() + chip)
                         FilterChip(

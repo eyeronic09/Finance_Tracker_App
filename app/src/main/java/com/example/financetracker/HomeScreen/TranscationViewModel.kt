@@ -3,10 +3,8 @@ package com.example.financetracker.HomeScreen
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -99,11 +97,11 @@ class TranscationViewModel(
     )
 
     // Balance, income, and expense totals for filtered transactions
-    val IncomeTotal : StateFlow<Double> = filteredTransactions.map { transactions ->
+    val incomeSum : StateFlow<Double> = filteredTransactions.map { transactions ->
         transactions.filter { it.type.equals("Income" , true)}.sumOf { it.amount }
     }.stateIn(viewModelScope , started = SharingStarted.WhileSubscribed(200) , 0.0)
 
-    val ExpenseTotal : StateFlow<Double> = filteredTransactions.map { transactions ->
+    val expenseSum : StateFlow<Double> = filteredTransactions.map { transactions ->
         transactions.filter { it.type.equals("expense" , true) }.sumOf {
             it.amount
         }
