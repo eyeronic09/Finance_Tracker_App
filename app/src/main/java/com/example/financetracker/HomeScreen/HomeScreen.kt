@@ -1,10 +1,12 @@
 package com.example.financetracker.HomeScreen
 
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.room.Database
 import com.example.financetracker.HomeScreen.component.BalanceCard
 import com.example.financetracker.HomeScreen.component.TranscationsDetail
 import com.example.financetracker.navigation.SealedScreen
@@ -34,7 +37,7 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {Text("Finance Tracker")}
+                title = { Text("Finance Tracker") }
             )
         },
         floatingActionButton = {
@@ -44,7 +47,7 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                 }
 
             ) {
-                Icon(Icons.Default.Add , contentDescription = null)
+                Icon(Icons.Default.Add, contentDescription = null)
             }
         }
     ) { innerPadding ->
@@ -52,11 +55,13 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
         val currentCategory by viewModel.selectedFilterCategory.collectAsStateWithLifecycle()
         val totalIncome by viewModel.IncomeTotal.collectAsStateWithLifecycle()
         val totalExpense by viewModel.ExpenseTotal.collectAsStateWithLifecycle()
-        Log.d("selectedCategory" , "$currentCategory")
+        Log.d("selectedCategory", "$currentCategory")
 
-        LazyColumn(modifier = Modifier
-            .fillMaxWidth()
-            .padding(innerPadding)) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(innerPadding)
+        ) {
             item {
                 BalanceCard(
                     balance = currentBalance,
@@ -67,25 +72,32 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
             }
             item {
                 // Filter chips row
-                Row (){
-                   categories.forEach { category ->
-                       val isSelected = currentCategory == category
-                       Log.d("isSelected" , isSelected.toString())
-                       FilterChip(
-                           selected = isSelected,
-                           onClick = { viewModel.onFilterCategory(if (isSelected) null else category) },
-                           label = { Text(category) }
-                       )
-                   }
+                LazyRow(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(categories.size) { index ->
+                        val chip = categories[index]
+                        val isSelected = currentCategory == chip
+                        Log.d("isSelected", isSelected.toString() + chip)
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = { viewModel.onFilterCategory(if (isSelected) null else chip) },
+                            label = { Text(text = chip) }
+                        )
+                    }
                 }
             }
-            items(transaction){ transaction ->
+            items(transaction) { transaction ->
                 TranscationsDetail(
                     transaction = transaction,
-                    onClick = {viewModel.deleteTransaction(transaction)}
+                    onClick = { viewModel.deleteTransaction(transaction) }
                 )
             }
-            Log.d("BalanceHome" , "$transaction")
+            Log.d("BalanceHome", "$transaction")
         }
     }
 }
+
+
+

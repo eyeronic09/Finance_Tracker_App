@@ -34,8 +34,8 @@ fun addContent(
     modifier: Modifier = Modifier
 ) {
 
-    val transactionTypes = listOf("income", "expense")
-    val categories = listOf("Food", "travel", "bill", "salary", "paycheck", "other")
+    val transactionTypes = listOf("Income", "Expense")
+    val categories = listOf("Food", "Travel", "Bill", "Salary", "Paycheck", "Other")
     Column(
         modifier = modifier
             .fillMaxSize()
