@@ -65,6 +65,10 @@ dependencies {
     // Jetpack Compose integration nav
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")// or the latest version
+
+    //Icons
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    //
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

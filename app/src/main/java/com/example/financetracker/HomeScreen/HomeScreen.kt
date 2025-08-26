@@ -50,6 +50,8 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
     ) { innerPadding ->
         val categories = listOf("Food", "travel", "bill", "salary", "paycheck", "other")
         val currentCategory by viewModel.selectedFilterCategory.collectAsStateWithLifecycle()
+        val totalIncome by viewModel.IncomeTotal.collectAsStateWithLifecycle()
+        val totalExpense by viewModel.ExpenseTotal.collectAsStateWithLifecycle()
         Log.d("selectedCategory" , "$currentCategory")
 
         LazyColumn(modifier = Modifier
@@ -58,7 +60,9 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
             item {
                 BalanceCard(
                     balance = currentBalance,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    totalIncome = totalIncome,
+                    totalExpenses = totalExpense,
                 )
             }
             item {

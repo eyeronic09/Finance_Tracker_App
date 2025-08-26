@@ -2,11 +2,11 @@ package com.example.financetracker.HomeScreen
 
 import android.os.Build
 import android.util.Log
-import android.widget.MultiAutoCompleteTextView
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.State
+import androidx.compose.animation.SharedTransitionScope
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,10 +17,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
-import kotlin.math.absoluteValue
 
 /**
  * The TranscationViewModel is responsible for managing the state of the amount for transactions.
@@ -31,7 +28,7 @@ import kotlin.math.absoluteValue
 class TranscationViewModel(
     private val transactionDao: TranscationDao
 ) : ViewModel() {
-   private val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
+    private val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
         .map { it }
         .stateIn(
             scope = viewModelScope,
@@ -43,61 +40,74 @@ class TranscationViewModel(
     val selectedOption: StateFlow<String?> = _selectedOption
 
     private val _category = MutableStateFlow<String?>(null)
-    val selectedCategory : StateFlow<String?> = _category
+    val selectedCategory: StateFlow<String?> = _category
     fun onSelectedCategory(category: String) {
         _category.value = category
     }
+
     private val _selectedFilterCategory = MutableStateFlow<String?>(null)
     val selectedFilterCategory: StateFlow<String?> = _selectedFilterCategory.asStateFlow()
 
 
-    val filteredTransactions = combine(allTransactions, selectedFilterCategory) { transactions, category ->
-        if (category == null) {
-            transactions
-        } else {
-            transactions.filter { it.category.equals(category, ignoreCase = true) }
-        }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+    val filteredTransactions =
+        combine(allTransactions, selectedFilterCategory) { transactions, category ->
+            if (category == null) {
+                transactions
+            } else {
+                transactions.filter { it.category.equals(category, ignoreCase = true) }
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     fun onFilterCategory(category: String?) {
         _selectedFilterCategory.value = category
     }
+
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
 
-
-
-    fun onOptionSelected(option: String){
+    fun onOptionSelected(option: String) {
         _selectedOption.value = option
     }
 
-    private val _amount  = MutableStateFlow("")
-    var amount : StateFlow<String> = _amount.asStateFlow()
+    private val _amount = MutableStateFlow("")
+    var amount: StateFlow<String> = _amount.asStateFlow()
     fun numField(newAmount: String) {
         _amount.value = newAmount
         Log.d("Amount", newAmount)
     }
 
 
-
-    val balance : StateFlow<Double> = allTransactions.map { transactions ->
-        transactions.fold(0.0){ acc, transaction ->
+    val balance: StateFlow<Double> = filteredTransactions.map { transactions ->
+        transactions.fold(0.0) { acc, transaction ->
             val amount = transaction.amount
-            if (transaction.type.equals("income" , ignoreCase = true)){
+            if (transaction.type.equals("income", ignoreCase = true)) {
                 acc + amount
-            }else{
+            } else {
                 acc - amount
             }
         }
-    }.stateIn(scope = viewModelScope , started = SharingStarted.WhileSubscribed(2000), initialValue = 0.0)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(2000),
+        initialValue = 0.0
+    )
 
+    // Balance, income, and expense totals for filtered transactions
+    val IncomeTotal : StateFlow<Double> = filteredTransactions.map { transactions ->
+        transactions.filter { it.type.equals("Income" , true)}.sumOf { it.amount }
+    }.stateIn(viewModelScope , started = SharingStarted.WhileSubscribed(200) , 0.0)
 
-
+    val ExpenseTotal : StateFlow<Double> = filteredTransactions.map { transactions ->
+        transactions.filter { it.type.equals("expense" , true) }.sumOf {
+            it.amount
+        }
+    }.stateIn(viewModelScope , started = SharingStarted.WhileSubscribed(200) , 0.0)
 
     /**
      * Adds a transaction to the database.
@@ -143,7 +153,6 @@ class TranscationViewModel(
             }
         }
     }
-
 
 
     /**
