@@ -1,5 +1,8 @@
 package com.example.financetracker.HomeScreen.component
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -17,46 +20,36 @@ import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction  // Make sure this path is correct
+import java.time.LocalDate
 
 
 @Composable
-fun TranscationsDetail(transaction: Transaction , onClick: () -> Unit) {
+fun TranscationsDetail(transaction: Transaction , onClick: () -> Unit ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
         ) {
-            Text("Amount: ${transaction.amount}")
-            Text("Type: ${transaction.type}")
-            Text("Date: ${transaction.date}")
-            Text("category${transaction.category}")
-        }
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 2.dp,
-            color = Color.Gray
-        )
-        IconButton(
-            onClick =  onClick
-        ) {
-            Icon(
-                Icons.Default.Delete ,
-                null)
+
         }
 
     }
 }
 
-@Preview(showSystemUi = true)
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
 @Composable
 private fun prevs() {
-
     TranscationsDetail(
         transaction = Transaction(
             1,
             amount = 121.9,
             type = "Income",
-            date = "32"   ,
-            "we"),
-        onClick = {}
+            date = LocalDate.now(),
+            "we"
+        ),
+        onClick = {},
+
     )
 }
