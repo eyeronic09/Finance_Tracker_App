@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 /**
  * The TranscationViewModel is responsible for managing the state of the amount for transactions.
@@ -119,7 +120,7 @@ class TranscationViewModel(
                 val amountValue = _amount.value.toDoubleOrNull()
                 val type = _selectedOption.value
                 val category = _category.value ?: "other"
-                val date = LocalDate.now()
+                val dateTime : LocalDateTime = LocalDateTime.now()
 
                 if (amountValue == null || amountValue <= 0.0) {
                     _errorMessage.value = "Enter a valid amount"
@@ -133,7 +134,7 @@ class TranscationViewModel(
                 val newTransaction = Transaction(
                     amount = amountValue,
                     type = type,
-                    date = date,
+                    date = dateTime,
                     category = category
                 )
 

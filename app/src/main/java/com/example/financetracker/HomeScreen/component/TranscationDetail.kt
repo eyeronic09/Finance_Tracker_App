@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction  // Make sure this path is correct
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 @Composable
@@ -46,7 +47,7 @@ private fun prevs() {
             1,
             amount = 121.9,
             type = "Income",
-            date = LocalDate.now(),
+            date = LocalDateTime.now(),
             "we"
         ),
         onClick = {},
