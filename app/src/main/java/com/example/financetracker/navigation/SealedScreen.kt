@@ -8,4 +8,6 @@ sealed class SealedScreen(val route : String){
     object HomeScreen : SealedScreen("HomeScreen")
 
     object AddScreen : SealedScreen("AddScreen" )
+
+    object summaryScreen : SealedScreen("summaryScreen")
 }

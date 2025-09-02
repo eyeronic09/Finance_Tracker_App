@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -38,7 +39,15 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Finance Tracker") }
+                title = { Text("Finance Tracker") },
+                actions = {
+                    TextButton(
+                        onClick = { navController.navigate(SealedScreen.summaryScreen.route) },
+                        modifier = Modifier.padding(end = 8.dp)
+                    ) {
+                        Text("Summary")
+                    }
+                }
             )
         },
         floatingActionButton = {

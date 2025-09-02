@@ -85,7 +85,6 @@ fun TransactionDetail(
 
             // right
 
-
             Text(
                 text = if (transaction.type.equals("income", ignoreCase = true))
                     "+ ₹${transaction.amount}"
