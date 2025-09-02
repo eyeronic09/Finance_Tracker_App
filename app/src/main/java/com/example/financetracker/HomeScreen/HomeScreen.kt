@@ -1,6 +1,8 @@
 package com.example.financetracker.HomeScreen
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,15 +21,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.financetracker.HomeScreen.component.BalanceCard
-import com.example.financetracker.HomeScreen.component.TranscationsDetail
+import com.example.financetracker.HomeScreen.component.TransactionDetail
 import com.example.financetracker.navigation.SealedScreen
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
@@ -89,7 +91,7 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                 }
             }
             items(transaction) { transaction ->
-                TranscationsDetail(
+                TransactionDetail(
                     transaction = transaction,
                     onClick = { viewModel.deleteTransaction(transaction) }
                 )

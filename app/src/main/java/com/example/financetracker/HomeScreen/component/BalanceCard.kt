@@ -1,5 +1,6 @@
 package com.example.financetracker.HomeScreen.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.NumberFormat
 import java.util.Locale
+import kotlin.concurrent.timer
 
 @Composable
 fun BalanceCard(
@@ -36,14 +39,19 @@ fun BalanceCard(
     modifier: Modifier = Modifier
 ) {
     val formattedBalance = NumberFormat.getCurrencyInstance(Locale.US).format(balance)
-    
+    val backgroundColor by animateColorAsState(
+        targetValue = when {
+            balance > 0 -> Color(0xFF4CAF50).copy(alpha = 0.2f)
+            balance < 0 -> Color(0xFFE57373).copy(alpha = 0.2f)
+            else -> MaterialTheme.colorScheme.primaryContainer
+        },
+    )
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            containerColor = backgroundColor,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     ) {
@@ -116,7 +124,7 @@ fun BalanceCard(
 @Composable
 fun BalanceCardPreview() {
     BalanceCard(
-        balance = 1000.0,
+        balance = -1000.0,
         totalIncome = 100.0, 500.0,
     )
 }
