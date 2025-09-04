@@ -64,7 +64,7 @@ fun SummaryCard(summary: Summary, modifier: Modifier = Modifier) {
             ) {
                 Text("Net Balance", style = MaterialTheme.typography.bodyMedium)
                 Text(
-                    text = "₹${String.format("%.2f", summary.netBalance)}",
+                    text = String.format("%.2f", summary.netBalance),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = if (summary.netBalance >= 0) Color(0xFF2E7D32) else Color(0xFFC62828)

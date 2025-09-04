@@ -69,6 +69,10 @@ dependencies {
     //Icons
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
+    // Times
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3")
     implementation(libs.androidx.core.ktx)

@@ -19,6 +19,9 @@ interface TranscationDao {
     @Update
     suspend fun updatetoBalance(transaction: Transaction)
 
+    @Query("SELECT * FROM transactions WHERE date >= :startDate AND date <= :endDate")
+    fun getByDateRange(startDate: String, endDate: String): Flow<List<Transaction>>
+
     @Query("SELECT * FROM transactions ORDER BY date DESC")
     fun getAll(): Flow<List<Transaction>>
 

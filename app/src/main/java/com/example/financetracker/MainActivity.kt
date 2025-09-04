@@ -26,7 +26,7 @@ import com.example.financetracker.HomeScreen.TranscationViewModelFactory
 import com.example.financetracker.navigation.SealedScreen
 import com.example.financetracker.summaryScreen.SummaryScreen
 import com.example.financetracker.summaryScreen.SummaryViewModel
-import com.example.financetracker.summaryScreen.SummaryViewModelFactory
+import com.example.financetracker.summaryScreen.SummaryModel.SummaryViewModelFactory
 import com.example.financetracker.summaryScreen.component.SummaryCard
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
 
