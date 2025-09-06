@@ -20,8 +20,8 @@ import java.time.LocalDate
 @RequiresApi(Build.VERSION_CODES.O)
 class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel() {
     // State for date range selection
-    private val _selectedDateRange = MutableStateFlow<String?>("last7")
-    val selectedDateRange: StateFlow<String?> = _selectedDateRange.asStateFlow()
+    private val _selectedDateRange = MutableStateFlow("last7") // Default to last 7 days
+    val selectedDateRange: StateFlow<String> = _selectedDateRange.asStateFlow()
 
     // State for custom date range
     private val _customStartDate = MutableStateFlow<LocalDate?>(null)
@@ -33,6 +33,39 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
     // State for date validation errors
     private val _dateError = MutableStateFlow<String?>(null)
     val dateError: StateFlow<String?> = _dateError.asStateFlow()
+    
+    // Function to set custom date range
+    fun setCustomDateRange(startDate: LocalDate, endDate: LocalDate) {
+        _customStartDate.value = startDate
+        _customEndDate.value = endDate
+        _selectedDateRange.value = "custom"
+        _dateError.value = null
+    }
+    
+    // Function to update selected date range
+    fun selectedDateRange(range: String) {
+        _selectedDateRange.value = range
+        _dateError.value = null
+        
+        // Set default date ranges for predefined options
+        val today = LocalDate.now()
+        when (range) {
+            "last7" -> {
+                _customStartDate.value = today.minusDays(6)
+                _customEndDate.value = today
+            }
+            "last30" -> {
+                _customStartDate.value = today.minusDays(29)
+                _customEndDate.value = today
+            }
+            // For "custom", the dates should be set via setCustomDateRange
+        }
+    }
+    
+    // Initialize with default date range
+    init {
+        selectedDateRange("last7")
+    }
 
     // All transactions from Room database
     val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
@@ -51,7 +84,7 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
     ) { transactions, start, end, range ->
         val today = LocalDate.now()
         val (startDate, endDate) = when (range) {
-            "last7" -> today.minusDays(7) to today
+            "last7" -> today.minusDays(1) to today
             "last30" -> today.minusDays(30) to today
             "custom" -> if (start != null && end != null && !start.isAfter(end)) {
                 start to end
@@ -61,13 +94,15 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
             else -> today.minusDays(30) to today // Default
         }
         transactions.filter { transaction ->
-            val transDate = transaction.date.toLocalDate() // Convert LocalDateTime to LocalDate
+            val transDate = transaction.date.toLocalDate()
+            Log.d("transctionsLast7" , transactions.toString())
             transDate.isAfter(startDate.minusDays(1)) && transDate.isBefore(endDate.plusDays(1))}
+
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+        initialValue = emptyList(),
+        )
 
     // Category summaries based on filtered transactions
     val summaryFlow: StateFlow<List<Summary>> = filterDate.map { transactions ->
@@ -90,24 +125,4 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
         initialValue = emptyList()
     )
 
-    // Set the selected date range
-    fun selectedDateRange(range: String?) {
-        _selectedDateRange.value = range
-        if (range != "custom") {
-            _customStartDate.value = null
-            _customEndDate.value = null
-            _dateError.value = null
-        }
-    }
-
-    // Set custom date range with validation
-    fun setCustomDates(start: LocalDate?, end: LocalDate?) {
-        if (start == null || end == null || start.isAfter(end)) {
-            _dateError.value = "Start date must be before end date"
-        } else {
-            _customStartDate.value = start
-            _customEndDate.value = end
-            _dateError.value = null
-        }
-    }
 }

@@ -73,6 +73,12 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 
+    // Test
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:4.5.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3")
     implementation(libs.androidx.core.ktx)
@@ -91,4 +97,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    testImplementation(kotlin("test"))
 }
