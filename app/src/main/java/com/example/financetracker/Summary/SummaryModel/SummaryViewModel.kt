@@ -1,4 +1,4 @@
-package com.example.financetracker.summaryScreen
+package com.example.financetracker.Summary.SummaryModel
 
 import android.os.Build
 import android.util.Log
@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
+import com.example.financetracker.Summary.SummaryData.Summary
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel() {
@@ -33,7 +33,7 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
     // State for date validation errors
     private val _dateError = MutableStateFlow<String?>(null)
     val dateError: StateFlow<String?> = _dateError.asStateFlow()
-    
+
     // Function to set custom date range
     fun setCustomDateRange(startDate: LocalDate, endDate: LocalDate) {
         _customStartDate.value = startDate
@@ -41,12 +41,12 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
         _selectedDateRange.value = "custom"
         _dateError.value = null
     }
-    
+
     // Function to update selected date range
     fun selectedDateRange(range: String) {
         _selectedDateRange.value = range
         _dateError.value = null
-        
+
         // Set default date ranges for predefined options
         val today = LocalDate.now()
         when (range) {
@@ -61,7 +61,7 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
             // For "custom", the dates should be set via setCustomDateRange
         }
     }
-    
+
     // Initialize with default date range
     init {
         selectedDateRange("last7")
@@ -71,7 +71,7 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
     val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.Companion.WhileSubscribed(5000),
             initialValue = emptyList()
         )
 
@@ -84,23 +84,25 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
     ) { transactions, start, end, range ->
         val today = LocalDate.now()
         val (startDate, endDate) = when (range) {
-            "last7" -> today.minusDays(1) to today
+            "last7" -> today.minusDays(7) to today
             "last30" -> today.minusDays(30) to today
             "custom" -> if (start != null && end != null && !start.isAfter(end)) {
                 start to end
             } else {
                 today.minusDays(30) to today // Fallback
             }
+
             else -> today.minusDays(30) to today // Default
         }
         transactions.filter { transaction ->
             val transDate = transaction.date.toLocalDate()
-            Log.d("transctionsLast7" , transactions.toString())
-            transDate.isAfter(startDate.minusDays(1)) && transDate.isBefore(endDate.plusDays(1))}
+            Log.d("transctionsLast7", transactions.toString())
+            transDate.isAfter(startDate.minusDays(1)) && transDate.isBefore(endDate.plusDays(1))
+        }
 
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Companion.WhileSubscribed(5000),
         initialValue = emptyList(),
         )
 
@@ -121,7 +123,7 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
         }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Companion.WhileSubscribed(5000),
         initialValue = emptyList()
     )
 

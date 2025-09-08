@@ -47,7 +47,7 @@ android {
 dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
     implementation(libs.material3)
-    val room_version = "2.6.1"
+    val room_version = "2.7.2"
     implementation("androidx.navigation:navigation-ui:2.9.3")
 
     val nav_version = "2.9.3"
@@ -78,6 +78,10 @@ dependencies {
     testImplementation("org.mockito:mockito-core:4.5.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+
+    //Chart and graph
+    implementation(libs.vico.compose)
+
 
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3")

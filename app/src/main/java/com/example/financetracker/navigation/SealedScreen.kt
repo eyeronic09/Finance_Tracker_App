@@ -9,5 +9,7 @@ sealed class SealedScreen(val route : String){
 
     object AddScreen : SealedScreen("AddScreen" )
 
-    object summaryScreen : SealedScreen("summaryScreen")
+    object SummaryScreen : SealedScreen("SummaryScreen")
+
+    object SummaryChart : SealedScreen("SummaryChart")
 }

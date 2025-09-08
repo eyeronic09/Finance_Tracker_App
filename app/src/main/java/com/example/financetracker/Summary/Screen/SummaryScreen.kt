@@ -1,24 +1,17 @@
-package com.example.financetracker.summaryScreen
+package com.example.financetracker.Summary.Screen
 
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DateRangePickerState
@@ -38,17 +31,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.financetracker.summaryScreen.component.SummaryCard
+import com.example.financetracker.Summary.SummaryModel.SummaryViewModel
+import com.example.financetracker.Summary.component.SummaryCard
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.platform.LocalConfiguration
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,6 +51,7 @@ fun SummaryScreen(
     val dates = listOf("last7", "last30", "custom")
     val summaryList by viewModel.summaryFlow.collectAsState()
     val filteredDate by viewModel.filterDate.collectAsState()
+    Log.d("FilterDate" , filteredDate.toString())
     val selectedDateRangeFilter by viewModel.selectedDateRange.collectAsState()
     val customStartDate by viewModel.customStartDate.collectAsState()
     val customEndDate by viewModel.customEndDate.collectAsState()
@@ -95,6 +87,9 @@ fun SummaryScreen(
                     }
                 }
             )
+        },
+        bottomBar = {
+
         }
     ) { paddingValues ->
         LazyColumn(
@@ -220,5 +215,6 @@ fun SummaryScreen(
                 )
             }
         }
+
     }
 }

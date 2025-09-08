@@ -1,5 +1,4 @@
-package com.example.financetracker.summaryScreen
-
+package com.example.financetracker.Summary.SummaryData
 
 data class Summary(
     val category: String,

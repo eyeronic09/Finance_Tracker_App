@@ -42,10 +42,15 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                 title = { Text("Finance Tracker") },
                 actions = {
                     TextButton(
-                        onClick = { navController.navigate(SealedScreen.summaryScreen.route) },
+                        onClick = { navController.navigate(SealedScreen.SummaryScreen.route) },
                         modifier = Modifier.padding(end = 8.dp)
                     ) {
                         Text("Summary")
+                    }
+                    TextButton(onClick = {
+                        navController.navigate(SealedScreen.SummaryChart.route)
+                    }) {
+                        Text("chart")
                     }
                 }
             )

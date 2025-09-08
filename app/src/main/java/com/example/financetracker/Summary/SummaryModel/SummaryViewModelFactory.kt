@@ -1,13 +1,15 @@
-package com.example.financetracker.summaryScreen.SummaryModel
+package com.example.financetracker.Summary.SummaryModel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
-import com.example.financetracker.summaryScreen.SummaryViewModel
 
 class SummaryViewModelFactory(
     private val transactionDao: TranscationDao
 ) : ViewModelProvider.Factory {
+    @RequiresApi(Build.VERSION_CODES.O)
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SummaryViewModel::class.java)) {
