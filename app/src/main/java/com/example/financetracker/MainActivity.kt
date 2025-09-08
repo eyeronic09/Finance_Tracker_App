@@ -60,7 +60,6 @@ fun AppNav() {
         factory = TranscationViewModelFactory(database.transactionDao())
     )
 
-    
     NavHost(
         navController = navController,
         startDestination = SealedScreen.HomeScreen.route
@@ -83,13 +82,13 @@ fun AppNav() {
                 viewModel = viewModel
             )
         }
-        composable(route = SealedScreen.SummaryChart.route) {
-            val viewModel: TransactionChartViewModel = viewModel(
-                factory = TransactionChartViewModelFactory(database.transactionDao())
-            )
-            SummaryChartScreen(
-                viewModel = viewModel
-            )
+        composable(SealedScreen.SummaryScreen.route) {
+            val viewModel: SummaryViewModel = viewModel(factory = SummaryViewModelFactory(database.transactionDao()))
+            SummaryScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(SealedScreen.SummaryChart.route) {
+            val viewModel: TransactionChartViewModel = viewModel(factory = TransactionChartViewModelFactory(database.transactionDao()))
+            SummaryChartScreen(navController ,viewModel = viewModel)
         }
     }
 }

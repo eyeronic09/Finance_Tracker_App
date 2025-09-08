@@ -12,6 +12,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Summarize
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.Summarize
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DateRangePickerState
@@ -22,32 +27,45 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.financetracker.Summary.SummaryModel.SummaryViewModel
 import com.example.financetracker.Summary.component.SummaryCard
+import com.example.financetracker.navigation.SealedScreen
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SummaryScreen(
     navController: NavController,
     viewModel: SummaryViewModel
 ) {
+
     val dates = listOf("last7", "last30", "custom")
     val summaryList by viewModel.summaryFlow.collectAsState()
     val filteredDate by viewModel.filterDate.collectAsState()
@@ -73,7 +91,11 @@ fun SummaryScreen(
             locale = configuration.locale
         )
     }
-
+    // Obtain the current back stack entry and destination from the NavController
+    // This is used to determine if the current screen is the selected destination
+    // in the bottom navigation bar.
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,7 +111,33 @@ fun SummaryScreen(
             )
         },
         bottomBar = {
-
+            NavigationBar {
+                SealedScreen.bottomNavItems.forEach { screen ->
+                    NavigationBarItem(
+                        selected = currentDestination?.route == screen.route,
+                        onClick = {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState  = true
+                            }
+                        },
+                        icon = {
+                            val icon = if (currentDestination?.route == screen.route) {
+                                screen.selectedIcon
+                            } else {
+                                screen.unselectedIcon
+                            }
+                            Icon(
+                                imageVector = icon ?: Icons.Filled.Info,
+                                contentDescription = screen.title
+                            )
+                        }
+                    )
+                }
+            }
         }
     ) { paddingValues ->
         LazyColumn(
