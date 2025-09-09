@@ -13,43 +13,37 @@ import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.ui.graphics.vector.ImageVector
-
 sealed class SealedScreen(
     val route: String,
     val title: String = "",
     val selectedIcon: ImageVector? = null,
     val unselectedIcon: ImageVector? = null
 ) {
-    object HomeScreen : SealedScreen(
-        route = "HomeScreen",
-        title = "Home",
-        selectedIcon = Icons.Filled.Home,
-        unselectedIcon = Icons.Outlined.Home
-    )
+    sealed class BottomNavScreen(
+        route: String,
+        title: String,
+        selectedIcon: ImageVector,
+        unselectedIcon: ImageVector
+    ) : SealedScreen(route, title, selectedIcon, unselectedIcon)
 
-    object AddScreen : SealedScreen(
-        route = "AddScreen",
-        title = "Add Transaction",
-        selectedIcon = Icons.AutoMirrored.Filled.List,
-        unselectedIcon = Icons.AutoMirrored.Outlined.List
-    )
+    object HomeScreen : SealedScreen("HomeScreen")
+    object AddScreen : SealedScreen("AddScreen")
 
-    object SummaryScreen : SealedScreen(
+    object SummaryScreen : BottomNavScreen(
         route = "SummaryScreen",
         title = "Summary",
         selectedIcon = Icons.AutoMirrored.Filled.List,
         unselectedIcon = Icons.AutoMirrored.Outlined.List
     )
 
-    object SummaryChart : SealedScreen(
+    object SummaryChart : BottomNavScreen(
         route = "SummaryChart",
         title = "Charts",
         selectedIcon = Icons.Filled.BarChart,
         unselectedIcon = Icons.Outlined.BarChart
     )
-    //for summary screen
+
     companion object {
-        // List of all bottom navigation items
         val bottomNavItems = listOf(SummaryScreen, SummaryChart)
     }
 }

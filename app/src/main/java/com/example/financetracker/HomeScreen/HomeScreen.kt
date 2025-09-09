@@ -47,11 +47,6 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                     ) {
                         Text("Summary")
                     }
-                    TextButton(onClick = {
-                        navController.navigate(SealedScreen.SummaryChart.route)
-                    }) {
-                        Text("chart")
-                    }
                 }
             )
         },
@@ -60,7 +55,6 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
                 onClick = {
                     navController.navigate(SealedScreen.AddScreen.route)
                 }
-
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)
             }

@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.financetracker"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -80,7 +80,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 
     //Chart and graph
-    implementation(libs.vico.compose)
+    implementation("co.yml:ycharts:2.1.0")
 
 
 

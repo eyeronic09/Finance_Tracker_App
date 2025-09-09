@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.financetracker.Summary.SummaryModel.SummaryViewModel
@@ -114,27 +115,30 @@ fun SummaryScreen(
             NavigationBar {
                 SealedScreen.bottomNavItems.forEach { screen ->
                     NavigationBarItem(
-                        selected = currentDestination?.route == screen.route,
+                       selected = currentDestination?.route == screen.route,
+
                         onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
+                            navController.navigate(screen.route){
+                                popUpTo(navController.graph.startDestinationId){
                                     saveState = true
                                 }
                                 launchSingleTop = true
-                                restoreState  = true
+                                restoreState = true
+                                Log.d("current" , "$currentDestination")
+                                Log.d("current" , "$navBackStackEntry")
                             }
                         },
+
                         icon = {
-                            val icon = if (currentDestination?.route == screen.route) {
-                                screen.selectedIcon
-                            } else {
-                                screen.unselectedIcon
-                            }
+                         //  come here and make more simple
+                            val isSelected =
+                                currentDestination?.hierarchy?.any { it.route == screen.route } == true
                             Icon(
-                                imageVector = icon ?: Icons.Filled.Info,
+                                imageVector = if (isSelected) screen.selectedIcon!! else screen.unselectedIcon!!,
                                 contentDescription = screen.title
                             )
-                        }
+                        },
+                        label = { Text(screen.title) }
                     )
                 }
             }

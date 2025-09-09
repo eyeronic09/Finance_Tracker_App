@@ -1,5 +1,6 @@
 package com.example.financetracker.Summary.SummaryModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
@@ -16,16 +17,16 @@ class TransactionChartViewModel(private val transactionDao: TranscationDao): Vie
         initialValue = emptyList()
     )
     val categoryTotalAndLable: StateFlow<Map<String, Double>> = allTransaction.map { transactions ->
-        transactions.groupBy { it.category }
-            .mapValues { (category, sumAmount) ->
-                sumAmount.sumOf { it.amount }
-            }
+        val grouped = transactions.groupBy { it.category }
+        Log.d("CategoryDebug", "Grouped into ${grouped.size} categories: ${grouped.keys}")
+        grouped.mapValues { (_, sumAmount) ->
+            sumAmount.sumOf { it.amount }
+        }
 
     }.stateIn(
         viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.WhileSubscribed(1000),
         initialValue = emptyMap()
     )
-
 
 }
