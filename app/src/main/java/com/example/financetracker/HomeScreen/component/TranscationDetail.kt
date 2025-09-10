@@ -1,7 +1,6 @@
 package com.example.financetracker.HomeScreen.component
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,29 +11,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.room.PrimaryKey
-import com.example.financetracker.HomeScreen.TransactionRoom.Transaction  // Make sure this path is correct
-import java.time.LocalDate
-import java.time.LocalDateTime
+import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import java.time.format.DateTimeFormatter
 
 
@@ -96,21 +83,4 @@ fun TransactionDetail(
             )
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-private fun prevs() {
-    TransactionDetail (
-        transaction = Transaction(
-            1,
-            amount = 121.9,
-            type = "Income",
-            date = LocalDateTime.now(),
-            "we"
-        ),
-        onClick = {},
-
-    )
 }

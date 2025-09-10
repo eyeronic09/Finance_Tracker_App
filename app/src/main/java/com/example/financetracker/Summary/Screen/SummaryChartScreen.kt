@@ -1,5 +1,6 @@
 package com.example.financetracker.Summary.Screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.financetracker.Summary.SummaryModel.TransactionChartViewModel
-import com.example.financetracker.Summary.component.BarChart
+import com.example.financetracker.Summary.component.barChartScreen
 import com.example.financetracker.navigation.SealedScreen
 
 @Composable
@@ -26,6 +27,9 @@ fun SummaryChartScreen(navController: NavController, viewModel: TransactionChart
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val categoryTotals by viewModel.categoryTotalAndLable.collectAsState()
+    Log.d("categoryTotals" , "$categoryTotals" )
+    Log.d("currentDestination" , "${navBackStackEntry?.destination} " + " $currentDestination"  + "${navController.graph}")
+
 
     Scaffold(
         modifier = Modifier.padding(),
@@ -66,9 +70,10 @@ fun SummaryChartScreen(navController: NavController, viewModel: TransactionChart
             verticalArrangement = Arrangement.Center
         )
         {if (categoryTotals.isEmpty()) {
-            Text("Loading data…")   // or show a spinner
+            Text("Loading data…")
         } else {
-            BarChart(categoryTotals)
+            barChartScreen(categoryTotals)
+
         }
         }
     }

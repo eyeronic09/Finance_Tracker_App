@@ -80,9 +80,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 
     //Chart and graph
-    implementation("co.yml:ycharts:2.1.0")
-
-
+    implementation (libs.compose.charts)
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.3")
     implementation(libs.androidx.core.ktx)

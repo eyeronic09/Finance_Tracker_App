@@ -16,11 +16,17 @@ class TransactionChartViewModel(private val transactionDao: TranscationDao): Vie
         started = SharingStarted.WhileSubscribed(3000),
         initialValue = emptyList()
     )
+/* <<<<<<<<<<<<<<  ✨ Windsurf Command 🌟 >>>>>>>>>>>>>>>> */
     val categoryTotalAndLable: StateFlow<Map<String, Double>> = allTransaction.map { transactions ->
+        transactions.groupBy { it.category }
+            .mapValues { (_, sumAmount) ->
+                sumAmount.sumOf { if (it.type.equals("expense", ignoreCase = true)) it.amount else -it.amount }
+            }
         val grouped = transactions.groupBy { it.category }
         Log.d("CategoryDebug", "Grouped into ${grouped.size} categories: ${grouped.keys}")
+
         grouped.mapValues { (_, sumAmount) ->
-            sumAmount.sumOf { it.amount }
+            sumAmount.sumOf { if (it.type.equals("income" , ignoreCase = true) ){it.amount} else -it.amount }
         }
 
     }.stateIn(

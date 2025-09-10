@@ -32,7 +32,6 @@ import com.example.financetracker.Summary.SummaryModel.TransactionChartViewModel
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
 
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -50,7 +49,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNav() {
     val navController = rememberNavController()
