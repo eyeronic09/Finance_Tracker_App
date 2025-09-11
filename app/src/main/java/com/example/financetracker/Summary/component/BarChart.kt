@@ -1,11 +1,9 @@
 package com.example.financetracker.Summary.component
 
-import androidx.collection.floatSetOf
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,8 +12,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.google.android.material.chip.Chip
 import ir.ehsannarmani.compose_charts.ColumnChart
 import ir.ehsannarmani.compose_charts.models.BarProperties
 import ir.ehsannarmani.compose_charts.models.Bars
@@ -23,7 +19,7 @@ import ir.ehsannarmani.compose_charts.models.DrawStyle
 import ir.ehsannarmani.compose_charts.models.LabelProperties
 
 @Composable
-fun barChartScreen(categoryTotals: Map<String, Double>) {
+fun BarChartScreen(categoryTotals: Map<String, Double>) {
     val chartData = categoryTotals.entries.map { (category, total) ->
         Bars(
             label = category,
@@ -47,7 +43,13 @@ fun barChartScreen(categoryTotals: Map<String, Double>) {
             builder = { modifier, label , _ , _  ->
                 AssistChip(
                     onClick = {},
-                    label = { Text(label) }
+                    label = { Text(label) },
+                    border = BorderStroke(
+                        brush = Brush.linearGradient(listOf(MaterialTheme.colorScheme.primaryContainer,
+                          MaterialTheme.colorScheme.primaryContainer
+                        )),
+                        width = 2.dp
+                    )
                 )
             }
         ),
@@ -74,6 +76,6 @@ private fun prevs() {
         "Miscellaneous" to 70.0
     )
 
-    barChartScreen(categoryTotals = data)
+    BarChartScreen(categoryTotals = data)
 
 }

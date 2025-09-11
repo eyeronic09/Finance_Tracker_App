@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.financetracker.Summary.SummaryModel.TransactionChartViewModel
-import com.example.financetracker.Summary.component.barChartScreen
+import com.example.financetracker.Summary.component.BarChartScreen
 import com.example.financetracker.navigation.SealedScreen
 
 @Composable
@@ -74,7 +74,7 @@ fun SummaryChartScreen(navController: NavController, viewModel: TransactionChart
         {if (categoryTotals.isEmpty()) {
             Text("Loading data…")
         } else {
-            barChartScreen(categoryTotals)
+            BarChartScreen(categoryTotals)
 
         }
         }
