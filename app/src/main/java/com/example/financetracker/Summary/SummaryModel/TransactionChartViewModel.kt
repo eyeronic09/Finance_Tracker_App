@@ -16,7 +16,6 @@ class TransactionChartViewModel(private val transactionDao: TranscationDao): Vie
         started = SharingStarted.WhileSubscribed(3000),
         initialValue = emptyList()
     )
-/* <<<<<<<<<<<<<<  ✨ Windsurf Command 🌟 >>>>>>>>>>>>>>>> */
     val categoryTotalAndLable: StateFlow<Map<String, Double>> = allTransaction.map { transactions ->
         transactions.groupBy { it.category }
             .mapValues { (_, sumAmount) ->
