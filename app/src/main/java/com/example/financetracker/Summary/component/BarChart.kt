@@ -1,21 +1,30 @@
 package com.example.financetracker.Summary.component
 
+import android.R
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.financetracker.ui.theme.Typography
+import com.google.android.material.color.MaterialColors
 import ir.ehsannarmani.compose_charts.ColumnChart
 import ir.ehsannarmani.compose_charts.models.BarProperties
 import ir.ehsannarmani.compose_charts.models.Bars
 import ir.ehsannarmani.compose_charts.models.DrawStyle
+import ir.ehsannarmani.compose_charts.models.HorizontalIndicatorProperties
 import ir.ehsannarmani.compose_charts.models.LabelProperties
 
 @Composable
@@ -25,39 +34,49 @@ fun BarChartScreen(categoryTotals: Map<String, Double>) {
             label = category,
             values = listOf(
                 Bars.Data(
-                    label = category,
                     value = total,
-                    color = Brush.linearGradient(colors = listOf(Color.Green , Color.Red  ))  // pick whatever color logic you want
-                )
+                    color = Brush.linearGradient(colors = listOf(Color.Green , Color.Red  ))
+
+                ),
             )
         )
     }
 
     ColumnChart(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(16.dp),
         data = chartData,
+        indicatorProperties = HorizontalIndicatorProperties(
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        ),
         labelProperties = LabelProperties(
-            textStyle = MaterialTheme.typography.labelSmall,
+            textStyle = TextStyle(
+               color = Color.Red
+            ),
             enabled = true,
-            builder = { modifier, label , _ , _  ->
+            builder = { modifier, label , value , _  ->
                 AssistChip(
                     onClick = {},
-                    label = { Text(label) },
+                    label = { Text(label ) },
                     border = BorderStroke(
                         brush = Brush.linearGradient(listOf(MaterialTheme.colorScheme.primaryContainer,
                           MaterialTheme.colorScheme.primaryContainer
                         )),
                         width = 2.dp
-                    )
+                    ),
+
                 )
             }
+
         ),
         barProperties = BarProperties(
-            thickness = 20.dp,         // width of each bar
-            spacing = 4.dp,             // spacing between Bars
-            cornerRadius = Bars.Data.Radius.Circular(6.dp),  // rounded corners
-            style = DrawStyle.Fill      // bar style
+            thickness = 20.dp,
+            spacing = 4.dp,
+            style = DrawStyle.Fill ,
+
         ),
         animationSpec = tween(durationMillis = 3000)
     )
