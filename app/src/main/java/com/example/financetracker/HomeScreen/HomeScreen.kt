@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.financetracker.HomeScreen.component.BalanceCard
 import com.example.financetracker.HomeScreen.component.TransactionDetail
 import com.example.financetracker.navigation.SealedScreen
@@ -101,10 +102,15 @@ fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
             items(transaction) { transaction ->
                 TransactionDetail(
                     transaction = transaction,
-                    onClick = { viewModel.deleteTransaction(transaction) }
+                    onClickUpdate = {
+                        val transactionLog = "$transaction"
+                        Log.d("edit", transactionLog)
+                        viewModel.setTransactionForEditing(transaction)
+                        navController.navigate(SealedScreen.EditScreen.route)
+                    },
                 )
             }
-            Log.d("BalanceHome", "$transaction")
+
         }
     }
 }

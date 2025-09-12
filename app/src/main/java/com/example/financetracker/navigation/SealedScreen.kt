@@ -29,6 +29,8 @@ sealed class SealedScreen(
     object HomeScreen : SealedScreen("HomeScreen")
     object AddScreen : SealedScreen("AddScreen")
 
+    object EditScreen : SealedScreen("EditScreen")
+
     object SummaryScreen : BottomNavScreen(
         route = "SummaryScreen",
         title = "Summary",

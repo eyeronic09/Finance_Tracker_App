@@ -65,28 +65,39 @@ fun AppNav() {
         composable(SealedScreen.HomeScreen.route) {
             HomeScreen(viewModel = viewModel, navController = navController)
         }
+        
         composable(SealedScreen.AddScreen.route) {
             AddScreen(
-                viewModel = viewModel,
-                navController = navController
-            )
-        }
-        composable(SealedScreen.SummaryScreen.route) {
-            val viewModel: SummaryViewModel = viewModel(
-                factory = SummaryViewModelFactory(database.transactionDao())
-            )
-            SummaryScreen(
                 navController = navController,
                 viewModel = viewModel
             )
         }
-        composable(SealedScreen.SummaryScreen.route) {
-            val viewModel: SummaryViewModel = viewModel(factory = SummaryViewModelFactory(database.transactionDao()))
-            SummaryScreen(navController = navController, viewModel = viewModel)
+        
+        composable(SealedScreen.EditScreen.route) {
+            EditTransactionScreen(
+                viewModel = viewModel,
+                navController = navController
+            )
         }
+        
+        composable(SealedScreen.SummaryScreen.route) {
+            val summaryViewModel: SummaryViewModel = viewModel(
+                factory = SummaryViewModelFactory(database.transactionDao())
+            )
+            SummaryScreen(
+                navController = navController,
+                viewModel = summaryViewModel
+            )
+        }
+        
         composable(SealedScreen.SummaryChart.route) {
-            val viewModel: TransactionChartViewModel = viewModel(factory = TransactionChartViewModelFactory(database.transactionDao()))
-            SummaryChartScreen(navController ,viewModel = viewModel)
+            val chartViewModel: TransactionChartViewModel = viewModel(
+                factory = TransactionChartViewModelFactory(database.transactionDao())
+            )
+            SummaryChartScreen(
+                navController = navController,
+                viewModel = chartViewModel
+            )
         }
     }
 }

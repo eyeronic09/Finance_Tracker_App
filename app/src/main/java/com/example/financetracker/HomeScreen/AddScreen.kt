@@ -54,6 +54,8 @@ fun AddScreen(
 
 ) {
 
+
+
     val amount by viewModel.amount.collectAsState(initial = "")
     val selectedOption by viewModel.selectedOption.collectAsState()
     val categorySelected by viewModel.selectedCategory.collectAsState()
@@ -65,6 +67,7 @@ fun AddScreen(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
+
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null
                         )

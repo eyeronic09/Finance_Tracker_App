@@ -1,8 +1,6 @@
 package com.example.financetracker.HomeScreen
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
@@ -15,7 +13,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**
@@ -37,6 +34,9 @@ class TranscationViewModel(
 
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
+
+    private val _transactionForEditing = MutableStateFlow<Transaction?>(null)
+    val transactionForEditing: StateFlow<Transaction?> = _transactionForEditing.asStateFlow()
 
     private val _category = MutableStateFlow<String?>(null)
     val selectedCategory: StateFlow<String?> = _category
@@ -81,6 +81,48 @@ class TranscationViewModel(
         Log.d("Amount", newAmount)
     }
 
+    /**
+     * Clears the editing state and resets all form fields
+     */
+    fun clearEditingState() {
+        _transactionForEditing.value = null
+        _amount.value = ""
+        _selectedOption.value = null
+        _category.value = null
+    }
+
+    /**
+     * Sets the transaction for editing and updates the form fields
+     */
+    fun setTransactionForEditing(transaction: Transaction){
+        // hold this current value for updating this will come from screen with onclick
+        // and setup with all the value with appropriate fields
+        _transactionForEditing.value = transaction
+        //++++++++++++++++++++++++++++++++++++++++++++//
+
+        _amount.value = transaction.amount.toString()
+        _selectedOption.value = transaction.type
+        _category.value = transaction.category
+
+    }
+    fun updateTransaction(updatedAmount: Double, updatedType: String, updatedCategory: String) {
+        val currentTransaction = _transactionForEditing.value ?: return
+
+        val updatedTransaction = currentTransaction.copy(
+            id = currentTransaction.id,
+            amount = updatedAmount,
+            type = updatedType,
+            category = updatedCategory,
+        )
+        
+        viewModelScope.launch {
+            transactionDao.updatetoBalance(updatedTransaction)
+            // Clear the editing state after successful update
+            clearEditingState()
+        }
+    }
+
+
 
     val balance: StateFlow<Double> = filteredTransactions.map { transactions ->
         transactions.fold(0.0) { acc, transaction ->
@@ -113,7 +155,6 @@ class TranscationViewModel(
      */
 
     // --- Actions ---
-    @RequiresApi(Build.VERSION_CODES.O)
     fun addTransaction() {
         viewModelScope.launch {
             try {
