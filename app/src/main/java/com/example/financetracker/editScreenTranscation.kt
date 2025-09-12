@@ -11,12 +11,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.financetracker.HomeScreen.TranscationViewModel
-import java.time.LocalDateTime
+import com.example.financetracker.HomeScreen.TransactionViewModel
 
 @Composable
 fun EditTransactionScreen(
-    viewModel: TranscationViewModel,
+    viewModel: TransactionViewModel,
     navController: NavController
 ) {
     // Collect the transaction being edited
@@ -31,7 +30,7 @@ fun EditTransactionScreen(
 
     if (transaction == null) return
 
-    // Get current values from ViewModel
+
     val amount by viewModel.amount.collectAsState()
     val selectedOption by viewModel.selectedOption.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
@@ -48,9 +47,6 @@ fun EditTransactionScreen(
             label = { Text("Amount") },
             modifier = Modifier.fillMaxWidth()
         )
-
-        // Add your other form fields (type, category, etc.) here
-        // ...
 
         Button(
             onClick = {
@@ -69,13 +65,12 @@ fun EditTransactionScreen(
         }
         
         IconButton(
-            onClick = { 
-                // Clear the editing state when back button is pressed
+            onClick = {
                 viewModel.clearEditingState()
                 navController.navigateUp() 
             }
         ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
     }
 }

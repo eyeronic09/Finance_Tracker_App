@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.financetracker.HomeScreen.component.BalanceCard
 import com.example.financetracker.HomeScreen.component.TransactionDetail
 import com.example.financetracker.navigation.SealedScreen
@@ -34,7 +33,7 @@ import com.example.financetracker.navigation.SealedScreen
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun HomeScreen(viewModel: TranscationViewModel , navController: NavController) {
+fun HomeScreen(viewModel: TransactionViewModel, navController: NavController) {
     val transaction by viewModel.filteredTransactions.collectAsStateWithLifecycle()
     val currentBalance by viewModel.balance.collectAsStateWithLifecycle(initialValue = 0.0)
     Scaffold(

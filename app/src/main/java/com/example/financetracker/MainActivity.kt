@@ -1,16 +1,13 @@
 package com.example.financetracker
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Composition
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -20,7 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.financetracker.HomeScreen.AddScreen
 import com.example.financetracker.HomeScreen.HomeScreen
 import com.example.financetracker.HomeScreen.TransactionRoom.TransactionDatabase
-import com.example.financetracker.HomeScreen.TranscationViewModel
+import com.example.financetracker.HomeScreen.TransactionViewModel
 import com.example.financetracker.HomeScreen.TranscationViewModelFactory
 import com.example.financetracker.Summary.Screen.SummaryChartScreen
 import com.example.financetracker.navigation.SealedScreen
@@ -54,7 +51,7 @@ fun AppNav() {
     val navController = rememberNavController()
     val context = LocalContext.current
     val database = TransactionDatabase.getDatabase(context)
-    val viewModel: TranscationViewModel = viewModel(
+    val viewModel: TransactionViewModel = viewModel(
         factory = TranscationViewModelFactory(database.transactionDao())
     )
 

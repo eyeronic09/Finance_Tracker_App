@@ -16,12 +16,12 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 /**
- * The TranscationViewModel is responsible for managing the state of the amount for transactions.
+ * The TransactionViewModel is responsible for managing the state of the amount for transactions.
  * It uses the MutableStateFlow class to create a state flow which allows us to observe changes
  * in the amount. The getter method for the amount property returns the state flow as a StateFlow.
  * This allows us to easily observe changes in the amount using the `collect` function.
  */
-class TranscationViewModel(
+class TransactionViewModel(
     private val transactionDao: TranscationDao
 ) : ViewModel() {
     private val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
@@ -206,14 +206,4 @@ class TranscationViewModel(
         }
     }
 
-    /**
-     * Updates a transaction in the database.
-     *
-     * @param transaction The transaction to be updated.
-     */
-    fun updateTransaction(transaction: Transaction) {
-        viewModelScope.launch {
-            transactionDao.updatetoBalance(transaction)
-        }
-    }
 }
