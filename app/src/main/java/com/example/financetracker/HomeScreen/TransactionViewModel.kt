@@ -1,6 +1,7 @@
 package com.example.financetracker.HomeScreen
 
 import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
@@ -21,6 +22,13 @@ import java.time.LocalDateTime
  * in the amount. The getter method for the amount property returns the state flow as a StateFlow.
  * This allows us to easily observe changes in the amount using the `collect` function.
  */
+sealed class UpdateStatus {
+    object Idle : UpdateStatus()
+    object Loading : UpdateStatus()
+    object Success : UpdateStatus()
+    data class Error(val message: String) : UpdateStatus()
+}
+
 class TransactionViewModel(
     private val transactionDao: TranscationDao
 ) : ViewModel() {
@@ -109,10 +117,9 @@ class TransactionViewModel(
         val currentTransaction = _transactionForEditing.value ?: return
 
         val updatedTransaction = currentTransaction.copy(
-            id = currentTransaction.id,
             amount = updatedAmount,
             type = updatedType,
-            category = updatedCategory,
+            category = updatedCategory
         )
         
         viewModelScope.launch {

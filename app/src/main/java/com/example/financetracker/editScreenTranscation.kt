@@ -1,5 +1,6 @@
 package com.example.financetracker
 
+import android.util.Log
 import androidx.compose.runtime.collectAsState
 
 import androidx.compose.foundation.layout.*
@@ -11,13 +12,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.financetracker.HomeScreen.TransactionViewModel
+import com.example.financetracker.navigation.SealedScreen
 
 @Composable
 fun EditTransactionScreen(
     viewModel: TransactionViewModel,
     navController: NavController
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    Log.d("navBackStackEntry" , "$navBackStackEntry")
+
     // Collect the transaction being edited
     val transaction by viewModel.transactionForEditing.collectAsState()
 
@@ -55,7 +61,6 @@ fun EditTransactionScreen(
                     updatedType = selectedOption ?: "expense",
                     updatedCategory = selectedCategory ?: "Other"
                 )
-                navController.popBackStack()
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -67,7 +72,8 @@ fun EditTransactionScreen(
         IconButton(
             onClick = {
                 viewModel.clearEditingState()
-                navController.navigateUp() 
+                navController.previousBackStackEntry
+                Log.d("nav" , "$navController.previousBackStackEntry")
             }
         ) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

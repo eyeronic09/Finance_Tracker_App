@@ -20,8 +20,9 @@ import java.time.LocalDate
 @RequiresApi(Build.VERSION_CODES.O)
 class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel() {
     // State for date range selection
-    private val _selectedDateRange = MutableStateFlow("last7") // Default to last 7 days
-    val selectedDateRange: StateFlow<String> = _selectedDateRange.asStateFlow()
+
+    private val _selectedDateRange = MutableStateFlow("last7")
+    val selectedDateRange: StateFlow<String?> = _selectedDateRange.asStateFlow()
 
     // State for custom date range
     private val _customStartDate = MutableStateFlow<LocalDate?>(null)
@@ -58,14 +59,13 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
                 _customStartDate.value = today.minusDays(29)
                 _customEndDate.value = today
             }
-            // For "custom", the dates should be set via setCustomDateRange
+            else -> {
+                return
+            }
         }
     }
 
-    // Initialize with default date range
-    init {
-        selectedDateRange("last7")
-    }
+
 
     // All transactions from Room database
     val allTransactions: StateFlow<List<Transaction>> = transactionDao.getAll()
@@ -85,18 +85,12 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
         val today = LocalDate.now()
         val (startDate, endDate) = when (range) {
             "last7" -> today.minusDays(7) to today
-            "last30" -> today.minusDays(30) to today
-            "custom" -> if (start != null && end != null && !start.isAfter(end)) {
-                start to end
-            } else {
-                today.minusDays(30) to today // Fallback
-            }
-
-            else -> today.minusDays(30) to today // Default
+            "last30" -> today.minusDays(29) to today
+            "custom" -> if (start != null && end != null && !start.isAfter(end)) start to end else today.minusDays(29) to today
+            else -> today.minusDays(29) to today
         }
         transactions.filter { transaction ->
             val transDate = transaction.date.toLocalDate()
-            Log.d("transctionsLast7", transactions.toString())
             transDate.isAfter(startDate.minusDays(1)) && transDate.isBefore(endDate.plusDays(1))
         }
 
