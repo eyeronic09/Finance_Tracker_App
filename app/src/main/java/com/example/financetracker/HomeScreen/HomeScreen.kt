@@ -107,6 +107,9 @@ fun HomeScreen(viewModel: TransactionViewModel, navController: NavController) {
                         viewModel.setTransactionForEditing(transaction)
                         navController.navigate(SealedScreen.EditScreen.route)
                     },
+                    onClickDelete = {
+                        viewModel.deleteTransaction(transaction)
+                    }
                 )
             }
 

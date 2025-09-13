@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -34,7 +35,8 @@ import java.time.LocalDateTime
 @Composable
 fun TransactionDetail(
     transaction: Transaction,
-    onClickUpdate: () -> Unit
+    onClickUpdate: () -> Unit ,
+    onClickDelete: () -> Unit
 ) {
 
     val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")
@@ -88,10 +90,20 @@ fun TransactionDetail(
                 fontWeight = FontWeight.Bold,
                 color = amountColor
             )
-            IconButton(onClickUpdate ) {
-                Icon(Icons.Default.Edit, contentDescription = "edit")
 
+        }
+        Column {
+            Row {
+                IconButton(onClickUpdate ) {
+                    Icon(Icons.Default.Edit, contentDescription = "edit")
+
+                }
+                IconButton(onClickDelete) {
+                    Icon(Icons.Default.Delete , contentDescription = "delete")
+                }
             }
+
+
         }
     }
 }
@@ -111,5 +123,6 @@ private fun TransactionDetailPreview() {
             type = "expense"
         ),
         onClickUpdate = {},
+        onClickDelete = {},
     )
 }

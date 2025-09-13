@@ -21,9 +21,11 @@ fun EditTransactionScreen(
     viewModel: TransactionViewModel,
     navController: NavController
 ) {
+    // Log the current back stack entry
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    Log.d("navBackStackEntry" , "$navBackStackEntry")
-
+    navBackStackEntry?.let {
+        Log.d("navBackStackEntry", "$it")
+    }
     // Collect the transaction being edited
     val transaction by viewModel.transactionForEditing.collectAsState()
 
@@ -68,14 +70,19 @@ fun EditTransactionScreen(
         ) {
             Text("Update Transaction")
         }
-        
+
+        // Button to clear editing state and navigate back
         IconButton(
             onClick = {
+                // Clear the editing state
                 viewModel.clearEditingState()
-                navController.previousBackStackEntry
-                Log.d("nav" , "$navController.previousBackStackEntry")
+                // Navigate back to the previous screen in the back stack
+                navController.popBackStack()
+                // Log the previous screen in the back stack
+                Log.d("nav", "${navController.currentDestination}")
             }
         ) {
+            // Display the arrow back icon
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
     }

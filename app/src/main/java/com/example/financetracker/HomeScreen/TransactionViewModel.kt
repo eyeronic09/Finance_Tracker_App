@@ -121,7 +121,7 @@ class TransactionViewModel(
             type = updatedType,
             category = updatedCategory
         )
-        
+
         viewModelScope.launch {
             transactionDao.updatetoBalance(updatedTransaction)
             // Clear the editing state after successful update
@@ -171,7 +171,7 @@ class TransactionViewModel(
                 val dateTime : LocalDateTime = LocalDateTime.now()
 
                 if (amountValue == null || amountValue <= 0.0) {
-                    _errorMessage.value = "Enter a valid amount"
+                    _errorMessage.value = "Please enter a positive amount"
                     return@launch
                 }
                 if (type == null) {
