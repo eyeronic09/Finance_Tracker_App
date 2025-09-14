@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.financetracker.HomeScreen.component.addContent
 
@@ -27,9 +28,9 @@ fun AddScreen(
     viewModel: TransactionViewModel,
 
     ) {
-    val amount by viewModel.amount.collectAsState(initial = "")
-    val selectedOption by viewModel.selectedOption.collectAsState()
-    val categorySelected by viewModel.selectedCategory.collectAsState()
+    val amount by viewModel.amount.collectAsStateWithLifecycle()
+    val selectedOption by viewModel.selectedOption.collectAsStateWithLifecycle()
+    val categorySelected by viewModel.selectedCategory.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {

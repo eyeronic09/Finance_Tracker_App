@@ -22,12 +22,6 @@ import java.time.LocalDateTime
  * in the amount. The getter method for the amount property returns the state flow as a StateFlow.
  * This allows us to easily observe changes in the amount using the `collect` function.
  */
-sealed class UpdateStatus {
-    object Idle : UpdateStatus()
-    object Loading : UpdateStatus()
-    object Success : UpdateStatus()
-    data class Error(val message: String) : UpdateStatus()
-}
 
 class TransactionViewModel(
     private val transactionDao: TranscationDao
@@ -115,20 +109,23 @@ class TransactionViewModel(
     }
     fun updateTransaction(updatedAmount: Double, updatedType: String, updatedCategory: String) {
         val currentTransaction = _transactionForEditing.value ?: return
+        if(updatedAmount >  0.0 ){
+            val updatedTransaction = currentTransaction.copy(
+                amount = updatedAmount,
+                type = updatedType,
+                category = updatedCategory
+            )
+            viewModelScope.launch {
+                transactionDao.updatetoBalance(updatedTransaction)
+                // Clear the editing state after successful update
+                clearEditingState()
+            }
 
-        val updatedTransaction = currentTransaction.copy(
-            amount = updatedAmount,
-            type = updatedType,
-            category = updatedCategory
-        )
-
-        viewModelScope.launch {
-            transactionDao.updatetoBalance(updatedTransaction)
-            // Clear the editing state after successful update
-            clearEditingState()
+        }else {
+            _errorMessage.value = "Enter amount above zero"
         }
-    }
 
+    }
 
 
     val balance: StateFlow<Double> = filteredTransactions.map { transactions ->

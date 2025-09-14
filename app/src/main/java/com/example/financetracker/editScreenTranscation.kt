@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.financetracker.HomeScreen.TransactionViewModel
@@ -27,21 +28,14 @@ fun EditTransactionScreen(
         Log.d("navBackStackEntry", "$it")
     }
     // Collect the transaction being edited
-    val transaction by viewModel.transactionForEditing.collectAsState()
-
-    // If no transaction is set for editing, show error and navigate back
-    LaunchedEffect(transaction) {
-        if (transaction == null) {
-            navController.popBackStack()
-        }
-    }
-
-    if (transaction == null) return
+    val transaction by viewModel.transactionForEditing.collectAsStateWithLifecycle()
 
 
-    val amount by viewModel.amount.collectAsState()
-    val selectedOption by viewModel.selectedOption.collectAsState()
-    val selectedCategory by viewModel.selectedCategory.collectAsState()
+
+
+    val amount by viewModel.amount.collectAsStateWithLifecycle()
+    val selectedOption by viewModel.selectedOption.collectAsStateWithLifecycle()
+    val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -63,6 +57,10 @@ fun EditTransactionScreen(
                     updatedType = selectedOption ?: "expense",
                     updatedCategory = selectedCategory ?: "Other"
                 )
+                navController.popBackStack(
+                    route = SealedScreen.HomeScreen.route,
+                    inclusive = false
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -70,16 +68,12 @@ fun EditTransactionScreen(
         ) {
             Text("Update Transaction")
         }
-
-        // Button to clear editing state and navigate back
         IconButton(
             onClick = {
                 // Clear the editing state
                 viewModel.clearEditingState()
-                // Navigate back to the previous screen in the back stack
-                navController.popBackStack()
-                // Log the previous screen in the back stack
-                Log.d("nav", "${navController.currentDestination}")
+                navController.popBackStack(route = SealedScreen.HomeScreen.route , inclusive = false)
+
             }
         ) {
             // Display the arrow back icon

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.room.Delete
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import java.time.format.DateTimeFormatter
 import kotlin.text.format
@@ -35,8 +36,8 @@ import java.time.LocalDateTime
 @Composable
 fun TransactionDetail(
     transaction: Transaction,
+    onDelete: () -> Unit,
     onClickUpdate: () -> Unit ,
-    onClickDelete: () -> Unit
 ) {
 
     val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a")
@@ -94,14 +95,16 @@ fun TransactionDetail(
         }
         Column {
             Row {
-                IconButton(onClickUpdate ) {
+                IconButton(onClick = onClickUpdate) {
                     Icon(Icons.Default.Edit, contentDescription = "edit")
 
                 }
-                IconButton(onClickDelete) {
-                    Icon(Icons.Default.Delete , contentDescription = "delete")
+                IconButton(onClick = onDelete) {
+                    Icon(Icons.Default.Delete, contentDescription = "delete")
+
                 }
             }
+
 
 
         }
@@ -123,6 +126,6 @@ private fun TransactionDetailPreview() {
             type = "expense"
         ),
         onClickUpdate = {},
-        onClickDelete = {},
+        onDelete = {}
     )
 }
