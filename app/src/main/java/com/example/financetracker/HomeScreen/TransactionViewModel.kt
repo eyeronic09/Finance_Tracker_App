@@ -112,30 +112,43 @@ class TransactionViewModel(
 
 
     }
-    suspend fun updateTransaction(updatedAmount: Double, updatedType: String, updatedCategory: String) {
-        val currentTransaction = _transactionForEditing.value ?: return
+    private val _isUpdating = MutableStateFlow(false)
+    val isUpdating: StateFlow<Boolean> = _isUpdating.asStateFlow()
 
-        try {
-            if(updatedAmount.isNaN()){
-                val updatedTransaction = currentTransaction.copy(
-                    amount = updatedAmount,
-                    type = updatedType,
-                    category = updatedCategory
-                )
-                viewModelScope.launch {
-                    transactionDao.updatetoBalance(updatedTransaction)
-                    // Clear the editing state after successful update
-                    clearEditingState()
-
-                }
-
-            }else{
-                _errorMessage.emit("enter a number")
+    suspend fun updateTransaction(updatedAmount: Double, updatedType: String, updatedCategory: String): Boolean {
+        if (_isUpdating.value) return false
+        
+        return try {
+            _isUpdating.value = true
+            
+            val currentTransaction = _transactionForEditing.value
+            if (currentTransaction == null) {
+                _errorMessage.emit("No transaction selected for editing")
+                return false
             }
+            
+            if (updatedAmount <= 0) {
+                _errorMessage.emit("Please enter a valid positive amount")
+                return false
+            }
+            
+            val updatedTransaction = currentTransaction.copy(
+                amount = updatedAmount,
+                type = updatedType,
+                category = updatedCategory,
+                date = LocalDateTime.now()
+            )
+            
+            transactionDao.updatetoBalance(updatedTransaction)
+            clearEditingState()
+            true
+            
         } catch (e: Exception) {
-            _errorMessage.emit("enter a positive amount")
+            _errorMessage.emit("Failed to update transaction: ${e.message}")
+            false
+        } finally {
+            _isUpdating.value = false
         }
-
     }
 
     suspend fun clearErrorMessage() {

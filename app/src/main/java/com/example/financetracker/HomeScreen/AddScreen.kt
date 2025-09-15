@@ -39,7 +39,6 @@ fun AddScreen(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null
                         )
