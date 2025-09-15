@@ -6,15 +6,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import kotlin.math.absoluteValue
 
 /**
  * The TransactionViewModel is responsible for managing the state of the amount for transactions.
@@ -68,8 +72,8 @@ class TransactionViewModel(
     }
 
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+    private val _errorMessage = MutableSharedFlow<String?>()
+    val errorMessage: SharedFlow<String?> = _errorMessage.asSharedFlow()
 
 
     fun onOptionSelected(option: String) {
@@ -106,28 +110,37 @@ class TransactionViewModel(
         _selectedOption.value = transaction.type
         _category.value = transaction.category
 
-    }
-    fun updateTransaction(updatedAmount: Double, updatedType: String, updatedCategory: String) {
-        val currentTransaction = _transactionForEditing.value ?: return
-        if(updatedAmount >  0.0 ){
-            val updatedTransaction = currentTransaction.copy(
-                amount = updatedAmount,
-                type = updatedType,
-                category = updatedCategory
-            )
-            viewModelScope.launch {
-                transactionDao.updatetoBalance(updatedTransaction)
-                // Clear the editing state after successful update
-                clearEditingState()
-            }
 
-        }else {
-            _errorMessage.value = "Enter amount above zero"
+    }
+    suspend fun updateTransaction(updatedAmount: Double, updatedType: String, updatedCategory: String) {
+        val currentTransaction = _transactionForEditing.value ?: return
+
+        try {
+            if(updatedAmount.isNaN()){
+                val updatedTransaction = currentTransaction.copy(
+                    amount = updatedAmount,
+                    type = updatedType,
+                    category = updatedCategory
+                )
+                viewModelScope.launch {
+                    transactionDao.updatetoBalance(updatedTransaction)
+                    // Clear the editing state after successful update
+                    clearEditingState()
+
+                }
+
+            }else{
+                _errorMessage.emit("enter a number")
+            }
+        } catch (e: Exception) {
+            _errorMessage.emit("enter a positive amount")
         }
 
     }
 
-
+    suspend fun clearErrorMessage() {
+        _errorMessage.emit(null)
+    }
     val balance: StateFlow<Double> = filteredTransactions.map { transactions ->
         transactions.fold(0.0) { acc, transaction ->
             val amount = transaction.amount
@@ -168,11 +181,11 @@ class TransactionViewModel(
                 val dateTime : LocalDateTime = LocalDateTime.now()
 
                 if (amountValue == null || amountValue <= 0.0) {
-                    _errorMessage.value = "Please enter a positive amount"
+                    _errorMessage.emit( "Please enter a positive amount")
                     return@launch
                 }
                 if (type == null) {
-                    _errorMessage.value = "Select income or expense"
+                    _errorMessage.emit("Select income or expense")
                     return@launch
                 }
 
@@ -189,10 +202,10 @@ class TransactionViewModel(
                 _amount.value = ""
                 _selectedOption.value = null
                 _category.value = null
-                _errorMessage.value = null
+                _errorMessage.emit(null)
 
             } catch (e: Exception) {
-                _errorMessage.value = "Error saving transaction"
+                _errorMessage.emit("Error saving transaction")
                 Log.e("TransactionViewModel", "Error adding transaction", e)
             }
         }

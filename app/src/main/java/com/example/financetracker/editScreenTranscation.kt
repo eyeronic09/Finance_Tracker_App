@@ -12,72 +12,97 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.financetracker.HomeScreen.TransactionViewModel
 import com.example.financetracker.navigation.SealedScreen
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun EditTransactionScreen(
     viewModel: TransactionViewModel,
     navController: NavController
 ) {
-    // Log the current back stack entry
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    navBackStackEntry?.let {
-        Log.d("navBackStackEntry", "$it")
-    }
     // Collect the transaction being edited
     val transaction by viewModel.transactionForEditing.collectAsStateWithLifecycle()
-
-
-
-
     val amount by viewModel.amount.collectAsStateWithLifecycle()
     val selectedOption by viewModel.selectedOption.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        // Form fields
-        OutlinedTextField(
-            value = amount,
-            onValueChange = { viewModel.numField(it) },
-            label = { Text("Amount") },
-            modifier = Modifier.fillMaxWidth()
-        )
+    // for snack bar
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-        Button(
-            onClick = {
-                viewModel.updateTransaction(
-                    updatedAmount = amount.toDoubleOrNull() ?: 0.0,
-                    updatedType = selectedOption ?: "expense",
-                    updatedCategory = selectedCategory ?: "Other"
-                )
-                navController.popBackStack(
-                    route = SealedScreen.HomeScreen.route,
-                    inclusive = false
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-        ) {
-            Text("Update Transaction")
+    var errorMessage = viewModel.errorMessage.collectAsStateWithLifecycle(null)
+    LaunchedEffect(errorMessage) {
+        val result = errorMessage.value?.let {
+            snackbarHostState.showSnackbar(
+                message = it,
+                duration = SnackbarDuration.Short
+            )
+            viewModel.clearErrorMessage()
         }
-        IconButton(
-            onClick = {
-                // Clear the editing state
-                viewModel.clearEditingState()
-                navController.popBackStack(route = SealedScreen.HomeScreen.route , inclusive = false)
 
-            }
-        ) {
-            // Display the arrow back icon
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-        }
     }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            // Form fields
+            OutlinedTextField(
+                value = amount,
+                onValueChange = { viewModel.numField(it) },
+                label = { Text("Amount") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {
+                    scope.launch {
+                        val amountValue = amount.toDoubleOrNull()
+                        if (amountValue == null || amountValue <= 0) {
+                            snackbarHostState.showSnackbar("Please enter a valid positive number")
+                            return@launch
+                        }
+                        viewModel.updateTransaction(
+                            updatedAmount = amountValue,
+                            updatedType = selectedOption ?: "expense",
+                            updatedCategory = selectedCategory ?: "Other"
+                        )
+                        snackbarHostState.showSnackbar("updated")
+                    }
+                }
+            ) {
+                Text("Update Transaction")
+            }
+            IconButton(
+                onClick = {
+                    // Clear the editing state
+                    viewModel.clearEditingState()
+                    navController.popBackStack(
+                        route = SealedScreen.HomeScreen.route,
+                        inclusive = false
+                    )
+
+                }
+            ) {
+                // Display the arrow back icon
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
+        }
+
+
+    }
+
 }

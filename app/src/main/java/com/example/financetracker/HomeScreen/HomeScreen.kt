@@ -133,7 +133,6 @@ fun HomeScreen(viewModel: TransactionViewModel, navController: NavController) {
                     pendingDelete = null
                 },
                 onDelete = {
-                    Log.d("pending" , "$pendingDelete" +  "this is one u $transaction")
                     pendingDelete?.let { viewModel.deleteTransaction(it) }
                     showDeleteDialog = false
                     pendingDelete = null
