@@ -14,7 +14,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -70,8 +72,7 @@ fun EditTransactionScreen(
     // Handle successful update
     LaunchedEffect(isUpdating) {
         if (!isUpdating && transaction == null) {
-            // If we were updating and now we're not, and transaction is cleared, it means update was successful
-            navController.popBackStack()
+             navController.popBackStack()
         }
     }
 

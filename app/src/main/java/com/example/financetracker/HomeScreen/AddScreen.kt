@@ -15,8 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.financetracker.HomeScreen.TransactionRoom.TranscationDao
 import com.example.financetracker.HomeScreen.component.addContent
 
 
@@ -29,13 +32,13 @@ fun AddScreen(
 
     ) {
     val amount by viewModel.amount.collectAsStateWithLifecycle()
-    val selectedOption by viewModel.selectedOption.collectAsStateWithLifecycle()
+    val setelectedType by viewModel.selectedOption.collectAsStateWithLifecycle()
     val categorySelected by viewModel.selectedCategory.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Screen") },
+                title = { Text(text = "Add Transaction") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -50,10 +53,9 @@ fun AddScreen(
     ) { innerPadding ->
         addContent(
             amount = amount,
-            transactionType = selectedOption,
             selectedCategory = categorySelected,
             onAmountChange = { viewModel.numField(it) },
-            onTransactionTypeSelected = {viewModel.onOptionSelected(it)},
+            onTransactionTypeSelected = { viewModel.onOptionSelected(it) },
             onCategorySelected = { viewModel.onSelectedCategory(it) },
             onAddClick = { viewModel.addTransaction() },
             modifier = Modifier.padding(innerPadding)
@@ -61,3 +63,4 @@ fun AddScreen(
     }
 
 }
+

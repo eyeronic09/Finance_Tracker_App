@@ -130,7 +130,6 @@ fun SummaryScreen(
                         },
 
                         icon = {
-                         //  come here and make more simple
                             val isSelected =
                                 currentDestination?.hierarchy?.any { it.route == screen.route } == true
                             Icon(
