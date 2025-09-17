@@ -87,10 +87,9 @@ fun AddContent(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(16.dp)
         ) {
-
             Text(
                 text = "Enter the amount",
                 style = MaterialTheme.typography.headlineSmall,

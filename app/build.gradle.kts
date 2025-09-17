@@ -47,6 +47,7 @@ android {
 dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
     implementation(libs.material3)
+    implementation(libs.androidx.compose.foundation)
     val room_version = "2.7.2"
     implementation("androidx.navigation:navigation-ui:2.9.3")
 
