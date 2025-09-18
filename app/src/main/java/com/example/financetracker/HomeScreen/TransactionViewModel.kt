@@ -1,7 +1,6 @@
 package com.example.financetracker.HomeScreen
 
 import android.util.Log
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import kotlin.math.absoluteValue
 
 /**
  * The TransactionViewModel is responsible for managing the state of the amount for transactions.
@@ -115,41 +113,6 @@ class TransactionViewModel(
     private val _isUpdating = MutableStateFlow(false)
     val isUpdating: StateFlow<Boolean> = _isUpdating.asStateFlow()
 
-    suspend fun updateTransaction(updatedAmount: Double, updatedType: String, updatedCategory: String): Boolean {
-        if (_isUpdating.value) return false
-        
-        return try {
-            _isUpdating.value = true
-            
-            val currentTransaction = _transactionForEditing.value
-            if (currentTransaction == null) {
-                _errorMessage.emit("No transaction selected for editing")
-                return false
-            }
-            
-            if (updatedAmount <= 0) {
-                _errorMessage.emit("Please enter a valid positive amount")
-                return false
-            }
-            
-            val updatedTransaction = currentTransaction.copy(
-                amount = updatedAmount,
-                type = updatedType,
-                category = updatedCategory,
-                date = LocalDateTime.now()
-            )
-            
-            transactionDao.updatetoBalance(updatedTransaction)
-            clearEditingState()
-            true
-            
-        } catch (e: Exception) {
-            _errorMessage.emit("Failed to update transaction: ${e.message}")
-            false
-        } finally {
-            _isUpdating.value = false
-        }
-    }
 
     suspend fun clearErrorMessage() {
         _errorMessage.emit(null)
