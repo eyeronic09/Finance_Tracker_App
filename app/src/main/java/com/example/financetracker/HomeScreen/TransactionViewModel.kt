@@ -35,12 +35,10 @@ class TransactionViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
-
+    private val _transactionForEdit = MutableStateFlow<Transaction?>(null)
+    val transactionForEdit: StateFlow<Transaction?> = _transactionForEdit.asStateFlow()
     private val _selectedOption = MutableStateFlow<String?>(null)
     val selectedOption: StateFlow<String?> = _selectedOption
-
-    private val _transactionForEditing = MutableStateFlow<Transaction?>(null)
-    val transactionForEditing: StateFlow<Transaction?> = _transactionForEditing.asStateFlow()
 
     private val _category = MutableStateFlow<String?>(null)
     val selectedCategory: StateFlow<String?> = _category
@@ -85,38 +83,18 @@ class TransactionViewModel(
         Log.d("Amount", newAmount)
     }
 
-    /**
-     * Clears the editing state and resets all form fields
-     */
-    fun clearEditingState() {
-        _transactionForEditing.value = null
+    // Clear form fields
+    private fun resetForm() {
         _amount.value = ""
         _selectedOption.value = null
         _category.value = null
     }
 
-    /**
-     * Sets the transaction for editing and updates the form fields
-     */
-    fun setTransactionForEditing(transaction: Transaction){
-        // hold this current value for updating this will come from screen with onclick
-        // and setup with all the value with appropriate fields
-        _transactionForEditing.value = transaction
-        //++++++++++++++++++++++++++++++++++++++++++++//
-
-        _amount.value = transaction.amount.toString()
-        _selectedOption.value = transaction.type
-        _category.value = transaction.category
-
-
-    }
-    private val _isUpdating = MutableStateFlow(false)
-    val isUpdating: StateFlow<Boolean> = _isUpdating.asStateFlow()
-
 
     suspend fun clearErrorMessage() {
         _errorMessage.emit(null)
     }
+
     val balance: StateFlow<Double> = filteredTransactions.map { transactions ->
         transactions.fold(0.0) { acc, transaction ->
             val amount = transaction.amount
@@ -133,15 +111,15 @@ class TransactionViewModel(
     )
 
     // Balance, income, and expense totals for filtered transactions
-    val incomeSum : StateFlow<Double> = filteredTransactions.map { transactions ->
-        transactions.filter { it.type.equals("Income" , true)}.sumOf { it.amount }
-    }.stateIn(viewModelScope , started = SharingStarted.WhileSubscribed(200) , 0.0)
+    val incomeSum: StateFlow<Double> = filteredTransactions.map { transactions ->
+        transactions.filter { it.type.equals("Income", true) }.sumOf { it.amount }
+    }.stateIn(viewModelScope, started = SharingStarted.WhileSubscribed(200), 0.0)
 
-    val expenseSum : StateFlow<Double> = filteredTransactions.map { transactions ->
-        transactions.filter { it.type.equals("expense" , true) }.sumOf {
+    val expenseSum: StateFlow<Double> = filteredTransactions.map { transactions ->
+        transactions.filter { it.type.equals("expense", true) }.sumOf {
             it.amount
         }
-    }.stateIn(viewModelScope , started = SharingStarted.WhileSubscribed(200) , 0.0)
+    }.stateIn(viewModelScope, started = SharingStarted.WhileSubscribed(200), 0.0)
 
     /**
      * Adds a transaction to the database.
@@ -154,10 +132,10 @@ class TransactionViewModel(
                 val amountValue = _amount.value.toDoubleOrNull()
                 val type = _selectedOption.value
                 val category = _category.value ?: "other"
-                val dateTime : LocalDateTime = LocalDateTime.now()
+                val dateTime: LocalDateTime = LocalDateTime.now()
 
                 if (amountValue == null || amountValue <= 0.0) {
-                    _errorMessage.emit( "Please enter a positive amount")
+                    _errorMessage.emit("Please enter a positive amount")
                     return@launch
                 }
                 if (type == null) {
@@ -174,16 +152,60 @@ class TransactionViewModel(
 
                 transactionDao.insert(newTransaction)
 
-                // reset inputs
-                _amount.value = ""
-                _selectedOption.value = null
-                _category.value = null
+                // reset form
+                resetForm()
                 _errorMessage.emit(null)
 
             } catch (e: Exception) {
                 _errorMessage.emit("Error saving transaction")
                 Log.e("TransactionViewModel", "Error adding transaction", e)
             }
+        }
+    }
+    fun setTransactionForEditing(transaction: Transaction) {
+        _transactionForEdit.value = transaction
+        _amount.value = transaction.amount.toString()
+        _selectedOption.value = transaction.type
+        _category.value = transaction.category
+    }
+
+    /**
+     * Updates an existing transaction with the current form values
+     * @param transaction The original transaction to be updated
+     * @return Boolean indicating if the update was successful
+     */
+    suspend fun updateTransaction(transaction: Transaction): Boolean {
+        return try {
+            val amountValue = _amount.value.toDoubleOrNull()
+            val type = _selectedOption.value
+            val category = _category.value ?: "other"
+
+            // Input validation
+            if (amountValue == null || amountValue <= 0) {
+                _errorMessage.emit("Please enter a valid positive amount")
+                return false
+            }
+
+            if (type == null) {
+                _errorMessage.emit("Please select a transaction type")
+                return false
+            }
+
+            val updatedTransaction = transaction.copy(
+                amount = amountValue,
+                type = type,
+                category = category,
+                date = LocalDateTime.now() // Update the timestamp
+            )
+
+            transactionDao.updatetoBalance(updatedTransaction)
+            resetForm()
+            true
+
+        } catch (e: Exception) {
+            Log.e("TransactionViewModel", "Error updating transaction", e)
+            _errorMessage.emit("Failed to update transaction: ${e.message}")
+            false
         }
     }
 

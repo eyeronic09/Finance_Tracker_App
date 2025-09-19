@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.financetracker.HomeScreen.AddScreen
+import com.example.financetracker.HomeScreen.EditTransactionScreen
 import com.example.financetracker.HomeScreen.HomeScreen
 import com.example.financetracker.HomeScreen.TransactionRoom.TransactionDatabase
 import com.example.financetracker.HomeScreen.TransactionViewModel
@@ -69,14 +70,16 @@ fun AppNav() {
                 viewModel = viewModel
             )
         }
-        
-        composable(SealedScreen.EditScreen.route) {
+        composable("edit_transaction") {
             EditTransactionScreen(
                 viewModel = viewModel,
                 navController = navController
             )
         }
-        
+
+
+
+
         composable(SealedScreen.SummaryScreen.route) {
             val summaryViewModel: SummaryViewModel = viewModel(
                 factory = SummaryViewModelFactory(database.transactionDao())

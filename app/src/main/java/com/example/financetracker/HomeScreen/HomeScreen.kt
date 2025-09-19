@@ -35,7 +35,6 @@ import com.example.financetracker.HomeScreen.TransactionRoom.Transaction
 import com.example.financetracker.navigation.SealedScreen
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreen(viewModel: TransactionViewModel, navController: NavController) {
@@ -72,6 +71,7 @@ fun HomeScreen(viewModel: TransactionViewModel, navController: NavController) {
         val currentCategory by viewModel.selectedFilterCategory.collectAsStateWithLifecycle()
         val totalIncome by viewModel.incomeSum.collectAsStateWithLifecycle()
         val totalExpense by viewModel.expenseSum.collectAsStateWithLifecycle()
+        val transactionEdit by viewModel.transactionForEdit.collectAsStateWithLifecycle()
         Log.d("selectedCategory", "$currentCategory")
 
         LazyColumn(
@@ -113,7 +113,7 @@ fun HomeScreen(viewModel: TransactionViewModel, navController: NavController) {
                         val transactionLog = "$transaction"
                         Log.d("edit", transactionLog)
                         viewModel.setTransactionForEditing(transaction)
-                        navController.navigate(SealedScreen.EditScreen.route)
+                        navController.navigate("edit_transaction")
                     },
                     onDelete = {
                         pendingDelete = transaction

@@ -1,8 +1,8 @@
 package com.example.financetracker.HomeScreen.component
 
-import android.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,13 +12,9 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Fastfood
@@ -27,16 +23,13 @@ import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -44,11 +37,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.*
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,7 +57,6 @@ fun AddContent(
     modifier: Modifier = Modifier
 ) {
     val transactionType = listOf("Income", "Expense")
-    var expandedForType by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf(transactionType[0]) }
 
     val transactionCategories = listOf("Food", "Travel", "Bill", "Salary", "Paycheck", "Other")
@@ -119,46 +110,24 @@ fun AddContent(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            ExposedDropdownMenuBox(
-                expanded = expandedForType,
-                onExpandedChange = { expandedForType = !expandedForType }
-            ) {
-                OutlinedTextField(
-                    value = selectedOption,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Transaction Type") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandedForType) },
-                    modifier = Modifier
-                        .menuAnchor(type = MenuAnchorType.PrimaryEditable, enabled = true)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                )
-
-                ExposedDropdownMenu(
-                    expanded = expandedForType,
-                    onDismissRequest = { expandedForType = false }
-                ) {
-                    transactionType.forEach { option ->
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                if (option == "Income") {
-                                    Icon(Icons.Default.ArrowUpward, null, tint = androidx.compose.ui.graphics.Color.Green )
-                                } else {
-                                    Icon(Icons.Default.ArrowDownward, null, tint = androidx.compose.ui.graphics.Color.Red )
-                                }
-                            },
-                            text = { Text(option) },
-                            onClick = {
-                                selectedOption = option
-                                onTransactionTypeSelected(option)
-                                expandedForType = false
-                            }
-                        )
-                    }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                transactionType.forEach { option ->
+                    RadioButton(
+                        selected = selectedOption == option,
+                        onClick = {
+                            selectedOption = option
+                            onTransactionTypeSelected(option)
+                        },
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = MaterialTheme.colorScheme.primary,
+                        ),
+                    )
+                    Text(
+                        text = option,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
 
             Text("Select Category:", style = MaterialTheme.typography.titleMedium)
