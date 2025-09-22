@@ -70,7 +70,7 @@ fun AppNav() {
                 viewModel = viewModel
             )
         }
-        composable("edit_transaction") {
+        composable(SealedScreen.EditScreen.route) {
             EditTransactionScreen(
                 viewModel = viewModel,
                 navController = navController

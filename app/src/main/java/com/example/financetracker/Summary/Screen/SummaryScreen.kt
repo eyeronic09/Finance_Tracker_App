@@ -67,7 +67,7 @@ fun SummaryScreen(
     viewModel: SummaryViewModel
 ) {
 
-    val dates = listOf("last7", "last30","ThisMonth", "custom")
+    val dates = listOf("Last 7 Days", "Last 30 Days", "This Month", "Custom")
     val summaryList by viewModel.summaryFlow.collectAsState()
     val filteredDate by viewModel.filterDate.collectAsState()
     Log.d("FilterDate" , filteredDate.toString())
@@ -162,7 +162,7 @@ fun SummaryScreen(
                         FilterChip(
                             selected = isSelected,
                             onClick = {
-                                if (chip == "custom") {
+                                if (chip == "Custom") {
                                     showDateRangePicker.value = true
                                 } else {
                                     viewModel.selectedDateRange(chip)
@@ -170,13 +170,7 @@ fun SummaryScreen(
                             },
                             label = {
                                 Text(
-                                    when (chip) {
-                                        "last7" -> "Last 7 Days"
-                                        "last30" -> "Last 30 Days"
-                                        "custom" -> "Custom"
-                                        "ThisMonth" -> "This Month"
-                                        else -> chip
-                                    },
+                                    text = chip,
                                     color = if (isSelected) {
                                         MaterialTheme.colorScheme.onPrimaryContainer
                                     } else {
@@ -196,7 +190,7 @@ fun SummaryScreen(
                 }
                 
                 // Display selected date range when custom is selected
-                if (selectedDateRangeFilter == "custom" && customStartDate != null && customEndDate != null) {
+                if (selectedDateRangeFilter == "Custom" && customStartDate != null && customEndDate != null) {
                     val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
                     Text(
                         text = "${customStartDate!!.format(formatter)} - ${customEndDate!!.format(formatter)}",
@@ -228,7 +222,7 @@ fun SummaryScreen(
                             
                             if (startDate != null && endDate != null) {
                                 viewModel.setCustomDateRange(startDate, endDate)
-                                viewModel.selectedDateRange("custom")
+                                viewModel.selectedDateRange("Custom")
                             }
                             showDateRangePicker.value = false
                         },

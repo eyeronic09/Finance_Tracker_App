@@ -91,7 +91,7 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
             "Last 7 Days" -> today.minusDays(6) to today
             "Last 30 Days" -> today.minusDays(29) to today
             "This Month" -> today.withDayOfMonth(1) to today.withDayOfMonth(today.lengthOfMonth())
-            "custom" -> if (start != null && end != null && !start.isAfter(end)) start to end else today.minusDays(29) to today
+            "Custom" -> if (start != null && end != null && !start.isAfter(end)) start to end else today.minusDays(29) to today
             else -> today.minusDays(29) to today
         }
         transactions.filter { transaction ->

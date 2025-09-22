@@ -113,7 +113,7 @@ fun HomeScreen(viewModel: TransactionViewModel, navController: NavController) {
                         val transactionLog = "$transaction"
                         Log.d("edit", transactionLog)
                         viewModel.setTransactionForEditing(transaction)
-                        navController.navigate("edit_transaction")
+                        navController.navigate(SealedScreen.EditScreen.route)
                     },
                     onDelete = {
                         pendingDelete = transaction
