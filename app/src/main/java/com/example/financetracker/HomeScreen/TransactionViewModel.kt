@@ -151,8 +151,6 @@ class TransactionViewModel(
                 )
 
                 transactionDao.insert(newTransaction)
-
-                // reset form
                 resetForm()
                 _errorMessage.emit(null)
 

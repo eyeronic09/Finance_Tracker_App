@@ -21,7 +21,7 @@ import java.time.LocalDate
 class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel() {
     // State for date range selection
 
-    private val _selectedDateRange = MutableStateFlow("last7")
+    private val _selectedDateRange = MutableStateFlow("Last 7 Days")
     val selectedDateRange: StateFlow<String?> = _selectedDateRange.asStateFlow()
 
     // State for custom date range
@@ -39,7 +39,7 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
     fun setCustomDateRange(startDate: LocalDate, endDate: LocalDate) {
         _customStartDate.value = startDate
         _customEndDate.value = endDate
-        _selectedDateRange.value = "custom"
+        _selectedDateRange.value = "Custom"
         _dateError.value = null
     }
 
@@ -51,13 +51,17 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
         // Set default date ranges for predefined options
         val today = LocalDate.now()
         when (range) {
-            "last7" -> {
+            "Last 7 Days" -> {
                 _customStartDate.value = today.minusDays(6)
                 _customEndDate.value = today
             }
-            "last30" -> {
+            "Last 30 Days" -> {
                 _customStartDate.value = today.minusDays(29)
                 _customEndDate.value = today
+            }
+            "This Month" -> {
+                _customStartDate.value = today.withDayOfMonth(1)
+                _customEndDate.value = today.withDayOfMonth(today.lengthOfMonth())
             }
             else -> {
                 return
@@ -84,8 +88,9 @@ class SummaryViewModel(private val transactionDao: TranscationDao) : ViewModel()
     ) { transactions, start, end, range ->
         val today = LocalDate.now()
         val (startDate, endDate) = when (range) {
-            "last7" -> today.minusDays(7) to today
-            "last30" -> today.minusDays(29) to today
+            "Last 7 Days" -> today.minusDays(6) to today
+            "Last 30 Days" -> today.minusDays(29) to today
+            "This Month" -> today.withDayOfMonth(1) to today.withDayOfMonth(today.lengthOfMonth())
             "custom" -> if (start != null && end != null && !start.isAfter(end)) start to end else today.minusDays(29) to today
             else -> today.minusDays(29) to today
         }

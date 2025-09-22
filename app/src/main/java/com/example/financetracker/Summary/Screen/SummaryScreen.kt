@@ -67,7 +67,7 @@ fun SummaryScreen(
     viewModel: SummaryViewModel
 ) {
 
-    val dates = listOf("last7", "last30", "custom")
+    val dates = listOf("last7", "last30","ThisMonth", "custom")
     val summaryList by viewModel.summaryFlow.collectAsState()
     val filteredDate by viewModel.filterDate.collectAsState()
     Log.d("FilterDate" , filteredDate.toString())
@@ -174,6 +174,7 @@ fun SummaryScreen(
                                         "last7" -> "Last 7 Days"
                                         "last30" -> "Last 30 Days"
                                         "custom" -> "Custom"
+                                        "ThisMonth" -> "This Month"
                                         else -> chip
                                     },
                                     color = if (isSelected) {
