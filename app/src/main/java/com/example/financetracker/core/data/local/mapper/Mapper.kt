@@ -7,7 +7,7 @@ import com.example.financetracker.core.domain.model.Transaction
 
 fun TransactionEntity.toDomain(categoryName: String): Transaction {
     return Transaction(
-        id = id,
+        id = transactionId,
         amount = amount,
         type = type,
         category = categoryName,
@@ -18,22 +18,11 @@ fun TransactionEntity.toDomain(categoryName: String): Transaction {
 
 fun Transaction.toEntity(): TransactionEntity {
     return TransactionEntity(
-        id = id,
+        transactionId = id,
         amount = amount,
         type = type,
-        category = category,
+        categoryId = 0, // This should be resolved from category name
         date = date,
         note = note
-    )
-}
-
-fun CategoryEntity.toDomain(): String {
-    return name
-}
-
-fun String.toCategoryEntity(type: String): CategoryEntity {
-    return CategoryEntity(
-        name = this,
-        type = type
     )
 }
