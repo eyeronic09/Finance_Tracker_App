@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.financetracker.ui.theme.FinanceTrackerTheme
 
 
 @Composable
@@ -79,5 +81,17 @@ fun BalanceCard(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BalanceCardPreview() {
+    FinanceTrackerTheme {
+        BalanceCard(
+            balance = 1500.0,
+            totalIncome = 2000.0,
+            totalExpense = 500.0
+        )
     }
 }
