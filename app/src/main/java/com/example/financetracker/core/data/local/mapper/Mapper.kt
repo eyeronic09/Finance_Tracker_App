@@ -21,7 +21,7 @@ fun Transaction.toEntity(): TransactionEntity {
         transactionId = id,
         amount = amount,
         type = type,
-        categoryId = 0, // This should be resolved from category name
+        categoryId = 0,
         date = date,
         note = note
     )
