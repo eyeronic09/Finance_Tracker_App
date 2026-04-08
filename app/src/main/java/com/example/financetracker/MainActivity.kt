@@ -7,26 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.financetracker.HomeScreen.AddScreen
-import com.example.financetracker.HomeScreen.EditTransactionScreen
-import com.example.financetracker.HomeScreen.HomeScreen
-import com.example.financetracker.HomeScreen.TransactionRoom.TransactionDatabase
-import com.example.financetracker.HomeScreen.TransactionViewModel
-import com.example.financetracker.HomeScreen.TranscationViewModelFactory
-import com.example.financetracker.Summary.Screen.SummaryChartScreen
-import com.example.financetracker.navigation.SealedScreen
-import com.example.financetracker.Summary.Screen.SummaryScreen
-import com.example.financetracker.Summary.SummaryModel.SummaryViewModel
-import com.example.financetracker.Summary.SummaryModel.SummaryViewModelFactory
-import com.example.financetracker.Summary.SummaryModel.TransactionChartViewModel
-import com.example.financetracker.Summary.SummaryModel.TransactionChartViewModelFactory
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
+
+import com.example.financetracker.HomeScreen.Screen._HomeScreen
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,64 +25,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNav()
+                    Navigator(
+                        screen = _HomeScreen()
+                    ) {
+                        SlideTransition(it)
+                    }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun AppNav() {
-    val navController = rememberNavController()
-    val context = LocalContext.current
-    val database = TransactionDatabase.getDatabase(context)
-    val viewModel: TransactionViewModel = viewModel(
-        factory = TranscationViewModelFactory(database.transactionDao())
-    )
-
-    NavHost(
-        navController = navController,
-        startDestination = SealedScreen.HomeScreen.route
-    ) {
-        composable(SealedScreen.HomeScreen.route) {
-            HomeScreen(viewModel = viewModel, navController = navController)
-        }
-        
-        composable(SealedScreen.AddScreen.route) {
-            AddScreen(
-                navController = navController,
-                viewModel = viewModel
-            )
-        }
-        composable(SealedScreen.EditScreen.route) {
-            EditTransactionScreen(
-                viewModel = viewModel,
-                navController = navController
-            )
-        }
-
-
-
-
-        composable(SealedScreen.SummaryScreen.route) {
-            val summaryViewModel: SummaryViewModel = viewModel(
-                factory = SummaryViewModelFactory(database.transactionDao())
-            )
-            SummaryScreen(
-                navController = navController,
-                viewModel = summaryViewModel
-            )
-        }
-        
-        composable(SealedScreen.SummaryChart.route) {
-            val chartViewModel: TransactionChartViewModel = viewModel(
-                factory = TransactionChartViewModelFactory(database.transactionDao())
-            )
-            SummaryChartScreen(
-                navController = navController,
-                viewModel = chartViewModel
-            )
         }
     }
 }
