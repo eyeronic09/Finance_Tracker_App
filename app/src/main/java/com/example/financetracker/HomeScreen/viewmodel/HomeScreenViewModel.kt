@@ -17,7 +17,10 @@ data class HomeScreenUiState(
     val selectedTransaction: Transaction? = null,
     val selectedDate: LocalDate? = null,
     val todayDate: LocalDate,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val totalIncome: Double = 0.0,
+    val totalExpense: Double = 0.0,
+    val balance: Double = 0.0
 )
 sealed interface HomeScreenEvent {
 
@@ -32,8 +35,6 @@ sealed interface HomeScreenEvent {
     data class OnDateSelected(val date: LocalDate) : HomeScreenEvent
 
     data object ClearDateFilter : HomeScreenEvent
-
-    data object NavigateToAddTransaction : HomeScreenEvent
 }
 
 /* ----------------------------- VIEWMODEL ----------------------------- */
@@ -49,9 +50,6 @@ class HomeScreenViewModel(
     )
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
 
-    init {
-        onEvent(HomeScreenEvent.LoadTransactions)
-    }
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
@@ -62,11 +60,16 @@ class HomeScreenViewModel(
                     _uiState.update { it.copy(isLoading = true) }
 
                     val data = repository.getAllTransactions()
+                    val income = data.filter { it.type.equals("Income", ignoreCase = true) }.sumOf { it.amount }
+                    val expense = data.filter { it.type.equals("Expense", ignoreCase = true) }.sumOf { it.amount }
 
                     _uiState.update {
                         it.copy(
                             transactions = data,
-                            isLoading = false
+                            isLoading = false,
+                            totalIncome = income,
+                            totalExpense = expense,
+                            balance = income - expense
                         )
                     }
                 }
@@ -78,9 +81,16 @@ class HomeScreenViewModel(
                     repository.deleteTransaction(event.transaction)
 
                     val updated = repository.getAllTransactions()
+                    val income = updated.filter { it.type.equals("Income", ignoreCase = true) }.sumOf { it.amount }
+                    val expense = updated.filter { it.type.equals("Expense", ignoreCase = true) }.sumOf { it.amount }
 
                     _uiState.update {
-                        it.copy(transactions = updated)
+                        it.copy(
+                            transactions = updated,
+                            totalIncome = income,
+                            totalExpense = expense,
+                            balance = income - expense
+                        )
                     }
                 }
             }
@@ -133,8 +143,21 @@ class HomeScreenViewModel(
                 }
             }
 
-            HomeScreenEvent.NavigateToAddTransaction -> {
-                // UI handles navigation (Navigator)
+        }
+    }
+    init {
+        loadTranscation()
+    }
+    fun loadTranscation(){
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            val data = repository.getAllTransactions()
+            _uiState.update {
+                it.copy(
+                    transactions = data,
+                    isLoading = false
+                )
             }
         }
     }

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 
-import com.example.financetracker.HomeScreen.Screen._HomeScreen
+import com.example.financetracker.HomeScreen.Screen.HomeScreen
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Navigator(
-                        screen = _HomeScreen()
+                        screen = HomeScreen()
                     ) {
                         SlideTransition(it)
                     }

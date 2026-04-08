@@ -13,9 +13,19 @@ class TransactionRepositoryImpl(
     private val categoryDao: CategoryDao
 ) : TransactionRepository {
 
+    /**
+     * This method returns all transactions from a specific category.
+     *
+     * @return A list of [Transaction] objects, each representing a transaction from the specified category.
+     * The list is obtained by querying the database for all transaction entities and then mapping each entity
+     * to a domain object. The domain object is created by finding the corresponding category entity in the database
+     * and passing its name to the [TransactionEntity.toDomain] function. If the category entity is not found,
+     * the category name is set to "Unknown".
+     */
     override suspend fun getAllTransactions(): List<Transaction> {
         return transactionDao.getAllTransactions().map { transactionEntity ->
             val category = categoryDao.getById(transactionEntity.categoryId)
+            // If the category entity is not found, set the category name to "Unknown"
             transactionEntity.toDomain(category?.name ?: "Unknown")
         }
     }
