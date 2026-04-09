@@ -1,7 +1,7 @@
 package com.example.financetracker.HomeScreen.state
 
 import com.example.financetracker.core.domain.model.Transaction
-import kotlinx.datetime.LocalDate
+import java.time.LocalDate
 
 /**
  * UI State for the Home Screen

@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 
 data class HomeScreenUiState(
@@ -45,7 +47,7 @@ class HomeScreenViewModel(
 
     private val _uiState = MutableStateFlow(
         HomeScreenUiState(
-            todayDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
+            todayDate = LocalDate.now()
         )
     )
     val uiState: StateFlow<HomeScreenUiState> = _uiState.asStateFlow()
@@ -115,9 +117,7 @@ class HomeScreenViewModel(
                     val all = repository.getAllTransactions()
 
                     val filtered = all.filter {
-                        Instant.fromEpochMilliseconds(it.date)
-                            .toLocalDateTime(TimeZone.currentSystemDefault())
-                            .date == event.date
+                        it.date.toLocalDate() == event.date
                     }
 
                     _uiState.update {

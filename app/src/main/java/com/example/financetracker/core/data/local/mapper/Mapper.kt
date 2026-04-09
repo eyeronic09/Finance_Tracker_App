@@ -1,8 +1,6 @@
 package com.example.financetracker.core.data.local.mapper
 
 import com.example.financetracker.core.data.local.entity.TransactionEntity
-import com.example.financetracker.core.data.local.entity.CategoryEntity
-import com.example.financetracker.core.data.local.entity.BudgetEntity
 import com.example.financetracker.core.domain.model.Transaction
 
 fun TransactionEntity.toDomain(categoryName: String): Transaction {
@@ -11,7 +9,7 @@ fun TransactionEntity.toDomain(categoryName: String): Transaction {
         amount = amount,
         type = type,
         category = categoryName,
-        date = date,
+        date = dateAndTime,
         note = note
     )
 }
@@ -22,7 +20,7 @@ fun Transaction.toEntity(): TransactionEntity {
         amount = amount,
         type = type,
         categoryId = 0,
-        date = date,
+        dateAndTime = date,
         note = note
     )
 }
