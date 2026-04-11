@@ -13,4 +13,6 @@ interface TransactionRepository {
     // Budget
     suspend fun getBudget(): Double
     suspend fun setBudget(budget: Budget)
+    suspend fun minusfromBudget(amount: Double)
+    suspend fun addtoBudget(amount: Double)
 }

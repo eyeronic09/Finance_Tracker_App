@@ -148,15 +148,21 @@ class HomeScreenViewModel(
     init {
         loadTranscation()
     }
-    fun loadTranscation(){
+    fun loadTranscation() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             val data = repository.getAllTransactions()
+            val income = data.filter { it.type.equals("Income", ignoreCase = true) }.sumOf { it.amount }
+            val expense = data.filter { it.type.equals("Expense", ignoreCase = true) }.sumOf { it.amount }
+
             _uiState.update {
                 it.copy(
                     transactions = data,
-                    isLoading = false
+                    isLoading = false,
+                    totalIncome = income,
+                    totalExpense = expense,
+                    balance = income - expense
                 )
             }
         }

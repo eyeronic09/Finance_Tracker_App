@@ -81,4 +81,25 @@ class TransactionRepositoryImpl(
         budgetDao.clear()
         budgetDao.insert(budget.toEntity())
     }
+
+    override suspend fun minusfromBudget(amount: Double) {
+        val current =  budgetDao.getBudgetAmount()
+        val total = current?.minus(amount)
+        if (total != null) {
+            budgetDao.updateBudgetAmount(total)
+        }
+
+
+    }
+
+    override suspend fun addtoBudget(amount: Double) {
+        val current =  budgetDao.getBudgetAmount()
+        val total = current?.plus(amount)
+        if (total != null) {
+            budgetDao.updateBudgetAmount(total)
+        }
+
+    }
+
+
 }
