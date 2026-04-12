@@ -19,6 +19,8 @@ data class BudgetUiState(
     val startDate: LocalDateTime = LocalDateTime.now(),
     val endDate: LocalDateTime = LocalDateTime.now(),
     val isAddBudgetDialogVisible: Boolean = false,
+    val spent : Double = 0.0,
+    val remaining : Double = 0.0,
     val newBudgetAmount: Double = 0.0
 )
 
@@ -58,8 +60,12 @@ class BudgetViewModel(
 
     init {
         viewModelScope.launch {
+            val spent = repository.getAllExpensesTransactionsOfThisMonths()
+            val remaining = _UiState.value.amount - spent
             _UiState.value = _UiState.value.copy(
-                amount = repository.getBudget()
+                amount = repository.getBudget(),
+                spent = spent,
+                remaining = remaining
             )
         }
     }
