@@ -40,7 +40,7 @@ fun TransactionDetail(
         Color(0xFFC62828)
 
     OutlinedCard(
-        modifier = Modifier
+        modifier = Modifier.Companion
             .fillMaxWidth()
             .padding(vertical = 6.dp, horizontal = 12.dp)
             .clickable { onClick() },
@@ -49,24 +49,24 @@ fun TransactionDetail(
         border = BorderStroke(1.dp, color = amountColor)
     ) {
         Row(
-            modifier = Modifier
+            modifier = Modifier.Companion
                 .fillMaxWidth()
                 .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Companion.CenterVertically
         ) {
             // Left side
             Column {
                 Text(
                     text = transaction.category,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Companion.Bold
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.Companion.height(4.dp))
                 Text(
                     text = formattedDate,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
+                    color = Color.Companion.Gray
                 )
             }
 
@@ -78,7 +78,7 @@ fun TransactionDetail(
                 else
                     "- ₹${transaction.amount}",
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Companion.Bold,
                 color = amountColor
             )
         }
