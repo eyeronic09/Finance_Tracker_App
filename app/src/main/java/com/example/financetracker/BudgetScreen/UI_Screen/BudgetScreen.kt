@@ -82,7 +82,6 @@ fun BudgetScreenRoute(viewModel: BudgetViewModel = koinViewModel()) {
 
 
 
-
 @Composable
 fun BudgetScreen(
     state: BudgetUiState,
@@ -196,7 +195,7 @@ fun BudgetCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "₹$7",
+                        text = "₹7",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.error,

@@ -25,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.financetracker.AddTransactionScreen.ui.getCategoryIcon
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,9 +36,9 @@ fun RowScrollDropdown(
 ) {
     Column {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.Companion.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Companion.CenterVertically
         ) {
             Text("Category", style = MaterialTheme.typography.titleMedium)
             TextButton(onClick = { /* TODO */ }) {
@@ -54,7 +54,7 @@ fun RowScrollDropdown(
                 val selected = category == selectedCategory
                 val colors = when (category) {
                     "Food" -> Pair(Color(0xFFFF9800), Color(0xFFFFF3E0))
-                    "Food & Dining"-> Pair(Color(0xFFFF9800), Color(0xFFFFF3E0))
+                    "Food & Dining" -> Pair(Color(0xFFFF9800), Color(0xFFFFF3E0))
                     "Shopping" -> Pair(Color(0xFF2196F3), Color(0xFFE3F2FD))
                     "Transportation" -> Pair(Color(0xFF9C27B0), Color(0xFFF3E5F5))
                     "Movies" -> Pair(Color(0xFFE91E63), Color(0xFFFCE4EC))
@@ -69,11 +69,11 @@ fun RowScrollDropdown(
                     else -> Pair(Color(0xFF757575), Color(0xFFF5F5F5))
                 }
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.clickable { onCategorySelected(category) }
+                    horizontalAlignment = Alignment.Companion.CenterHorizontally,
+                    modifier = Modifier.Companion.clickable { onCategorySelected(category) }
                 ) {
                     Box(
-                        modifier = Modifier
+                        modifier = Modifier.Companion
                             .size(60.dp)
                             .background(
                                 color = if (selected) colors.first.copy(alpha = 0.2f) else colors.second,
@@ -81,23 +81,23 @@ fun RowScrollDropdown(
                             )
                             .border(
                                 width = if (selected) 2.dp else 0.dp,
-                                color = if (selected) colors.first else Color.Transparent,
-                                shape = RoundedCornerShape(16.dp)
+                                color = if (selected) colors.first else Color.Companion.Transparent,
+                                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
                             ),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Companion.Center
                     ) {
                         Icon(
                             imageVector = getCategoryIcon(category),
                             contentDescription = category,
                             tint = colors.first,
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier.Companion.size(28.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.Companion.height(4.dp))
                     Text(
                         text = category,
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (selected) colors.first else Color.Gray
+                        color = if (selected) colors.first else Color.Companion.Gray
                     )
                 }
             }
