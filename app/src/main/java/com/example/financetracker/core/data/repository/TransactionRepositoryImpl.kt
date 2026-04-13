@@ -62,10 +62,6 @@ class TransactionRepositoryImpl(
         transactionDao.update(transactionEntity)
     }
 
-    override suspend fun getAllExpensesTransactionsOfThisMonths(): Double {
-        return transactionDao.getAllTransactionsExpensesOfThisMonth() ?: 0.0
-    }
-
     override suspend fun deleteTransaction(transaction: Transaction) {
         // Find the transaction by ID to get the entity for deletion
         val transactions = transactionDao.getAllTransactions()
