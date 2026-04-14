@@ -1,15 +1,26 @@
 package com.example.financetracker.HomeScreen
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.example.financetracker.HomeScreen.viewmodel.HomeScreenEvent
+import com.example.financetracker.HomeScreen.viewmodel.HomeScreenUiState
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -24,24 +35,58 @@ object HomeTab : Tab {
 
     @Composable
     override fun Content() {
-        Navigator(HomeScreenContainer())
-    }
-}
-
-class HomeScreenContainer : Screen {
-    @Composable
-    override fun Content() {
-        val viewModel: HomeScreenViewModel = koinViewModel()
-        val navigator = LocalNavigator.current
-
-        // Navigate to the actual HomeScreenRoute which should be defined in the UI file
-        HomeScreenRoute(viewModel = viewModel)
+        HomeScreenRoute()
     }
 }
 
 @Composable
-fun HomeScreenRoute(viewModel: HomeScreenViewModel) {
-    // This is a placeholder - the actual implementation should be in the HomeScreen UI file
-    // For now, just show a simple screen
-    Text("Home Screen - To be implemented")
+fun HomeScreenRoute(viewModel: HomeScreenViewModel = koinViewModel()) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val event = viewModel::onEvent
+
+    HomeScreen(
+        state = state,
+        onAction = event
+    )
+}
+
+@Composable
+fun HomeScreen(state: HomeScreenUiState, onAction: (HomeScreenEvent) -> Unit , modifier: Modifier = Modifier , navigator: Navigator) {
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navigator.push()
+                },
+                content = { Text("+") }
+            )
+        },
+        bottomBar = {
+
+        }
+    ) { it ->
+        HomeScreenContent(
+            state = state,
+            onAction = onAction,
+            modifier = modifier.padding(it)
+        )
+    }
+}
+
+@Composable
+fun HomeScreenContent(
+    state: HomeScreenUiState,
+    onAction: (HomeScreenEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when {
+        state.transactions.isEmpty() -> {
+            Text(text = "No Transactions")
+        }
+        else -> {
+            Column(modifier = modifier.fillMaxSize()) {
+
+            }
+        }
+    }
 }
