@@ -1,4 +1,4 @@
-package com.example.financetracker.HomeScreen.component
+package com.example.financetracker.AddTransaction.compontent
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
