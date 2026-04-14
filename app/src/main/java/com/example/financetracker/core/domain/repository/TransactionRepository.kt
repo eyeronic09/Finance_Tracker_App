@@ -9,6 +9,7 @@ interface TransactionRepository {
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
     suspend fun deleteAllTransactions()
+    suspend fun getAlltheCategory(): List<String>
 
     // Budget
     suspend fun getBudget(): Double

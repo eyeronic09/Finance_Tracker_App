@@ -10,6 +10,7 @@ import com.example.financetracker.core.data.local.entity.BudgetEntity
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
 import com.example.financetracker.core.domain.model.Transaction
 import com.example.financetracker.core.domain.repository.TransactionRepository
+import kotlinx.coroutines.coroutineScope
 
 class TransactionRepositoryImpl(
     private val transactionDao: TransactionDao,
@@ -63,7 +64,6 @@ class TransactionRepositoryImpl(
     }
 
     override suspend fun deleteTransaction(transaction: Transaction) {
-        // Find the transaction by ID to get the entity for deletion
         val transactions = transactionDao.getAllTransactions()
         val entityToDelete = transactions.find { it.transactionId == transaction.id }
         entityToDelete?.let { transactionDao.delete(it) }
@@ -71,6 +71,27 @@ class TransactionRepositoryImpl(
 
     override suspend fun deleteAllTransactions() {
         transactionDao.deleteAll()
+    }
+
+    override suspend fun getAlltheCategory(): List<String> {
+        val categories = categoryDao.getAll()
+        if (categories.isEmpty()) {
+            val defaultCategories = listOf(
+                CategoryEntity(name = "Food", type = "EXPENSE"),
+                CategoryEntity(name = "Shopping", type = "EXPENSE"),
+                CategoryEntity(name = "Transportation", type = "EXPENSE"),
+                CategoryEntity(name = "Movies", type = "EXPENSE"),
+                CategoryEntity(name = "Salary", type = "INCOME"),
+                CategoryEntity(name = "Investment", type = "INCOME"),
+                CategoryEntity(name = "Rent", type = "EXPENSE"),
+                CategoryEntity(name = "Bills & Utilities", type = "EXPENSE"),
+                CategoryEntity(name = "Healthcare", type = "EXPENSE")
+            )
+            defaultCategories.forEach {
+                categoryDao.insert(it)
+            }
+        }
+        return categories.map { it.name }
     }
 
     override suspend fun getBudget(): Double {
@@ -88,8 +109,6 @@ class TransactionRepositoryImpl(
         if (total != null) {
             budgetDao.updateBudgetAmount(total)
         }
-
-
     }
 
     override suspend fun addtoBudget(amount: Double) {
@@ -100,6 +119,4 @@ class TransactionRepositoryImpl(
         }
 
     }
-
-
 }

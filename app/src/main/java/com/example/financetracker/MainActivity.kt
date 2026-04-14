@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
         val tabNavigator = LocalTabNavigator.current
 
         NavigationBarItem(
-            selected = tabNavigator.current == tab,
+            selected = tabNavigator.current.key == tab.key,
             onClick = { tabNavigator.current = tab },
             icon = { tab.options.icon?.let { Icon(painter = it, contentDescription = tab.options.title) } },
             label = { Text(tab.options.title) }

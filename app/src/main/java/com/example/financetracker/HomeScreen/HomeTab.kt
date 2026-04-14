@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -23,6 +22,8 @@ import com.example.financetracker.HomeScreen.viewmodel.HomeScreenEvent
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenUiState
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenViewModel
 import org.koin.androidx.compose.koinViewModel
+import com.example.financetracker.FinanceTrackerApplication
+import com.example.financetracker.AddTransaction._AddTranscationScreen
 
 object HomeTab : Tab {
     override val options: TabOptions
@@ -35,6 +36,13 @@ object HomeTab : Tab {
 
     @Composable
     override fun Content() {
+        Navigator(_HomeScreen())
+    }
+}
+
+class _HomeScreen : Screen {
+    @Composable
+    override fun Content() {
         HomeScreenRoute()
     }
 }
@@ -43,20 +51,29 @@ object HomeTab : Tab {
 fun HomeScreenRoute(viewModel: HomeScreenViewModel = koinViewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val event = viewModel::onEvent
+    val navigator = LocalNavigator.current
 
-    HomeScreen(
-        state = state,
-        onAction = event
-    )
+    navigator?.let {
+        HomeScreen(
+            state = state,
+            onAction = event,
+            navigator = it,
+        )
+    }
 }
 
 @Composable
-fun HomeScreen(state: HomeScreenUiState, onAction: (HomeScreenEvent) -> Unit , modifier: Modifier = Modifier , navigator: Navigator) {
+fun HomeScreen(
+    state: HomeScreenUiState,
+    onAction: (HomeScreenEvent) -> Unit,
+    modifier: Modifier = Modifier,
+    navigator: Navigator
+) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navigator.push()
+                    navigator.push(_AddTranscationScreen())
                 },
                 content = { Text("+") }
             )

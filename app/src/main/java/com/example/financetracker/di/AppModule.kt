@@ -1,6 +1,7 @@
 package com.example.financetracker.di
 
 import androidx.room.Room
+import com.example.financetracker.AddTransaction.AddTransactionVM
 import com.example.financetracker.BudgetScreen.UI_Screen.BudgetViewModel
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenViewModel
 import com.example.financetracker.core.data.local.database.AppDatabase
@@ -38,4 +39,5 @@ val appModule = module {
     // ViewModels
     viewModel { HomeScreenViewModel(repository = get()) }
     viewModel { BudgetViewModel(repository = get()) }
+    viewModel { AddTransactionVM(categoryRepository = get()) }
 }
