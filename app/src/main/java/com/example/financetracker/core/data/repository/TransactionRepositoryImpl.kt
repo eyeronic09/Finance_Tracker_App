@@ -8,6 +8,7 @@ import com.example.financetracker.core.data.local.mapper.toDomain
 import com.example.financetracker.core.data.local.entity.CategoryEntity
 import com.example.financetracker.core.data.local.entity.BudgetEntity
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
+import com.example.financetracker.core.domain.model.Category
 import com.example.financetracker.core.domain.model.Transaction
 import com.example.financetracker.core.domain.repository.TransactionRepository
 import kotlinx.coroutines.coroutineScope
@@ -73,7 +74,7 @@ class TransactionRepositoryImpl(
         transactionDao.deleteAll()
     }
 
-    override suspend fun getAlltheCategory(): List<String> {
+    override suspend fun getAlltheCategory(): List<Category> {
         val categories = categoryDao.getAll()
         if (categories.isEmpty()) {
             val defaultCategories = listOf(
@@ -91,7 +92,7 @@ class TransactionRepositoryImpl(
                 categoryDao.insert(it)
             }
         }
-        return categories.map { it.name }
+        return categoryDao.getAll().map { it.toDomain() }
     }
 
     override suspend fun getBudget(): Double {

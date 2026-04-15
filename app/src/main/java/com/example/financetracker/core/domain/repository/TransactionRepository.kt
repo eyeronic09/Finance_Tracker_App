@@ -1,6 +1,7 @@
 package com.example.financetracker.core.domain.repository
 
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
+import com.example.financetracker.core.domain.model.Category
 import com.example.financetracker.core.domain.model.Transaction
 
 interface TransactionRepository {
@@ -9,7 +10,7 @@ interface TransactionRepository {
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
     suspend fun deleteAllTransactions()
-    suspend fun getAlltheCategory(): List<String>
+    suspend fun getAlltheCategory(): List<Category>
 
     // Budget
     suspend fun getBudget(): Double
