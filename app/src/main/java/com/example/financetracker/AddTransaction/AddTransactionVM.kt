@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.core.domain.model.Transaction
 import com.example.financetracker.core.domain.repository.TransactionRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,6 +28,7 @@ enum class TransactionType {
     }
 }
 data class AddTransactionUiState(
+    val toastMessage: String? = null,
     val transactionType: TransactionType = TransactionType.income,
     val category: String = "",
     val availableCategories : List<String> = emptyList(),
@@ -43,6 +47,9 @@ data class amountChange(val amount: Double) : AddTransactionEvent
 class AddTransactionVM (val categoryRepository: TransactionRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(AddTransactionUiState(selectedDate = LocalDateTime.now()))
     val uiState: StateFlow<AddTransactionUiState> = _uiState.asStateFlow()
+
+    private val _event = MutableSharedFlow<String>()
+    val event: SharedFlow<String> = _event.asSharedFlow()
 
     fun onEvent(onEvent: AddTransactionEvent) {
         when (onEvent) {
@@ -93,21 +100,47 @@ class AddTransactionVM (val categoryRepository: TransactionRepository) : ViewMod
     }
     private fun saveTransaction() {
         val state = _uiState.value
-        viewModelScope.launch {
-           if (state.amount >= 0.0 && state.category.isNotEmpty() ) {
-               val newTransaction = Transaction(
-                   id = 0,
-                   amount = state.amount,
-                   type = state.transactionType.name,
-                   category = state.category,
-                   date = state.selectedDate ,
-                   note = state.transactionNote.toString()
-               )
-               categoryRepository.insertTransaction(newTransaction)
 
-           }else{
-               Log.d("tag" , "sorry")
-           }
+        viewModelScope.launch {
+            when {
+                state.amount == 0.0 || state.amount <= 0.0 -> {
+                    _uiState.update { it ->
+                        it.copy(toastMessage = "Please enter a valid amount")
+                    }
+                    _event.emit(state.toastMessage.toString())
+                }
+
+                state.transactionType.name.isEmpty() -> {
+                    _uiState.update { it ->
+                        it.copy(toastMessage = "Please select a transaction type or category")
+                    }
+                    _event.emit(state.toastMessage.toString())
+                }
+
+                else -> {
+                    val newTransaction = Transaction(
+                        id = 0,
+                        amount = state.amount,
+                        type = state.transactionType.name,
+                        category = state.category,
+                        date = state.selectedDate,
+                        note = state.transactionNote.toString()
+                    )
+                    categoryRepository.insertTransaction(newTransaction)
+                    _event.emit("Saved successfully")
+                    _uiState.update { it ->
+                        it.copy(
+                            amount = 0.0,
+                            transactionType = TransactionType.income,
+                            category = "",
+                            availableCategories = emptyList(),
+                            selectedDate = LocalDateTime.now(),
+                            transactionNote = null
+                        )
+                    }
+                }
+            }
         }
+        Log.d("AddTransactionVM", "Saving transaction: $state")
     }
 }
