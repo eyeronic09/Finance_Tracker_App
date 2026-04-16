@@ -95,13 +95,10 @@ fun HomeScreenContent(
     onAction: (HomeScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    when {
-        state.transactions.isEmpty() -> {
 
-        }
-        else -> {
-
-
-        }
-    }
+    WeekContent(
+        state = state,
+        onEvent = onAction,
+        modifier = modifier.fillMaxSize()
+    )
 }

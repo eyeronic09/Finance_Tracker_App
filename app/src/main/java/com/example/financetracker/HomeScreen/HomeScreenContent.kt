@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -38,6 +39,8 @@ fun WeekContent(
     val startDate: LocalDate = remember { time.minusDays(100) }
     val endDate = remember { time.plusDays(100) }
 
+
+
     val firstDayOfWeek = remember { firstDayOfWeekFromLocale() }
 
     val calendarState = rememberWeekCalendarState(
@@ -49,6 +52,15 @@ fun WeekContent(
 
     Column(modifier = modifier) {
         WeekCalendar(
+            weekHeader = { week ->
+                val firstDate = week.days.first().date
+                val monthName = firstDate.month.name.lowercase().replaceFirstChar { it.uppercase() }
+                Text(
+                    text = "$monthName ${firstDate.year}",
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 4.dp),
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
             state = calendarState,
             dayContent = { day ->
                 val date = day.date
@@ -62,9 +74,10 @@ fun WeekContent(
                         .clickable { onEvent(HomeScreenEvent.OnDateSelected(date)) },
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Text(text = date.dayOfWeek.name.take(3))
                     Text(
                         text = date.dayOfMonth.toString(),
-                        color = if (isSelected) Color.White else if (isToday) Color.Blue else Color.Black,
+                        color = if (isSelected) Color.White else if (isToday) Color.Blue else MaterialTheme.colorScheme.onSurface,
                         fontWeight = if (isSelected || isToday) FontWeight.Bold else FontWeight.Normal,
                         modifier = if (isSelected) {
                             Modifier

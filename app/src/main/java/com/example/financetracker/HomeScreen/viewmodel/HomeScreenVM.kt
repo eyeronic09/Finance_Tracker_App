@@ -23,7 +23,7 @@ data class HomeScreenUiState(
 
 sealed interface HomeScreenEvent {
 
-    data object LoadTransactions : HomeScreenEvent
+
 
     data class DeleteTransaction(val transaction: Transaction) : HomeScreenEvent
 
@@ -50,27 +50,6 @@ class HomeScreenViewModel(
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
-
-            /* 🔹 Load Transactions */
-            HomeScreenEvent.LoadTransactions -> {
-                viewModelScope.launch {
-                    _uiState.update { it.copy(isLoading = true) }
-
-                    val data = repository.getAllTransactions()
-                    val income = data.filter { it.type.equals("Income", ignoreCase = true) }.sumOf { it.amount }
-                    val expense = data.filter { it.type.equals("Expense", ignoreCase = true) }.sumOf { it.amount }
-
-                    _uiState.update {
-                        it.copy(
-                            transactions = data,
-                            isLoading = false,
-                            totalIncome = income,
-                            totalExpense = expense,
-                            balance = income - expense
-                        )
-                    }
-                }
-            }
 
             /* 🔹 Delete Transaction */
             is HomeScreenEvent.DeleteTransaction -> {
@@ -131,35 +110,12 @@ class HomeScreenViewModel(
 
                     _uiState.update {
                         it.copy(
-
                             transactions = all
                         )
                     }
                 }
             }
 
-        }
-    }
-    init {
-        loadTranscation()
-    }
-    fun loadTranscation() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-
-            val data = repository.getAllTransactions()
-            val income = data.filter { it.type.equals("Income", ignoreCase = true) }.sumOf { it.amount }
-            val expense = data.filter { it.type.equals("Expense", ignoreCase = true) }.sumOf { it.amount }
-
-            _uiState.update {
-                it.copy(
-                    transactions = data,
-                    isLoading = false,
-                    totalIncome = income,
-                    totalExpense = expense,
-                    balance = income - expense
-                )
-            }
         }
     }
 }
