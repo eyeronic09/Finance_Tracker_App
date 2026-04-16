@@ -14,7 +14,6 @@ import java.time.LocalDate
 data class HomeScreenUiState(
     val transactions: List<Transaction> = emptyList(),
     val selectedTransaction: Transaction? = null,
-    val selectedDate: LocalDate? = null,
     val todayDate: LocalDate,
     val isLoading: Boolean = false,
     val totalIncome: Double = 0.0,
@@ -107,7 +106,7 @@ class HomeScreenViewModel(
                 }
             }
 
-            /* 🔹 Filter by Date */
+
             is HomeScreenEvent.OnDateSelected -> {
                 viewModelScope.launch {
                     val all = repository.getAllTransactions()
@@ -118,7 +117,7 @@ class HomeScreenViewModel(
 
                     _uiState.update {
                         it.copy(
-                            selectedDate = event.date,
+                            todayDate = event.date,
                             transactions = filtered
                         )
                     }
@@ -132,7 +131,7 @@ class HomeScreenViewModel(
 
                     _uiState.update {
                         it.copy(
-                            selectedDate = null,
+
                             transactions = all
                         )
                     }

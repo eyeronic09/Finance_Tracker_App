@@ -84,8 +84,10 @@ dependencies {
     
     // Charts
     implementation(libs.compose.charts)
+    implementation("com.kizitonwose.calendar:compose:2.10.1")
 
-    // Test
+
+// Test
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:4.5.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")

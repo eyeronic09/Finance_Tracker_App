@@ -22,7 +22,6 @@ import com.example.financetracker.HomeScreen.viewmodel.HomeScreenEvent
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenUiState
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenViewModel
 import org.koin.androidx.compose.koinViewModel
-import com.example.financetracker.FinanceTrackerApplication
 import com.example.financetracker.AddTransaction._AddTranscationScreen
 
 object HomeTab : Tab {
@@ -98,12 +97,11 @@ fun HomeScreenContent(
 ) {
     when {
         state.transactions.isEmpty() -> {
-            Text(text = "No Transactions")
+
         }
         else -> {
-            Column(modifier = modifier.fillMaxSize()) {
 
-            }
+
         }
     }
 }
