@@ -23,6 +23,10 @@ import com.example.financetracker.HomeScreen.viewmodel.HomeScreenUiState
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenViewModel
 import org.koin.androidx.compose.koinViewModel
 import com.example.financetracker.AddTransaction._AddTranscationScreen
+import com.example.financetracker.HomeScreen.component.CustomDatePicker
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 object HomeTab : Tab {
     override val options: TabOptions
@@ -77,9 +81,6 @@ fun HomeScreen(
                 content = { Text("+") }
             )
         },
-        bottomBar = {
-
-        }
     ) { it ->
         HomeScreenContent(
             state = state,
@@ -95,6 +96,19 @@ fun HomeScreenContent(
     onAction: (HomeScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    if (state.openDatePicker) {
+        CustomDatePicker(
+            onDismiss = { onAction(HomeScreenEvent.OpenDatePicker) },
+            onDateSelected = { millis ->
+                millis?.let {
+                    val date = Instant.ofEpochMilli(it)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                    onAction(HomeScreenEvent.OnDateSelected(date))
+                }
+            }
+        )
+    }
 
     WeekContent(
         state = state,

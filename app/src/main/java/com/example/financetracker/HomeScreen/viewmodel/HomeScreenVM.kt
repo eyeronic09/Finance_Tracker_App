@@ -13,6 +13,7 @@ import java.time.LocalDate
 
 data class HomeScreenUiState(
     val transactions: List<Transaction> = emptyList(),
+    val openDatePicker : Boolean = false,
     val selectedTransaction: Transaction? = null,
     val todayDate: LocalDate,
     val isLoading: Boolean = false,
@@ -33,7 +34,7 @@ sealed interface HomeScreenEvent {
 
     data class OnDateSelected(val date: LocalDate) : HomeScreenEvent
 
-    data object ClearDateFilter : HomeScreenEvent
+    data object OpenDatePicker : HomeScreenEvent
 }
 
 class HomeScreenViewModel(
@@ -50,35 +51,16 @@ class HomeScreenViewModel(
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
-
-            /* 🔹 Delete Transaction */
             is HomeScreenEvent.DeleteTransaction -> {
-                viewModelScope.launch {
-                    repository.deleteTransaction(event.transaction)
 
-                    val updated = repository.getAllTransactions()
-                    val income = updated.filter { it.type.equals("Income", ignoreCase = true) }.sumOf { it.amount }
-                    val expense = updated.filter { it.type.equals("Expense", ignoreCase = true) }.sumOf { it.amount }
-
-                    _uiState.update {
-                        it.copy(
-                            transactions = updated,
-                            totalIncome = income,
-                            totalExpense = expense,
-                            balance = income - expense
-                        )
-                    }
-                }
             }
 
-            /* 🔹 Select Transaction */
             is HomeScreenEvent.SelectTransaction -> {
                 _uiState.update {
                     it.copy(selectedTransaction = event.transaction)
                 }
             }
 
-            /* 🔹 Clear Selected */
             HomeScreenEvent.ClearSelectedTransaction -> {
                 _uiState.update {
                     it.copy(selectedTransaction = null)
@@ -102,20 +84,11 @@ class HomeScreenViewModel(
                     }
                 }
             }
-
-            /* 🔹 Clear Date Filter */
-            HomeScreenEvent.ClearDateFilter -> {
-                viewModelScope.launch {
-                    val all = repository.getAllTransactions()
-
-                    _uiState.update {
-                        it.copy(
-                            transactions = all
-                        )
-                    }
+            HomeScreenEvent.OpenDatePicker -> {
+                _uiState.update { it ->
+                    it.copy(openDatePicker = !it.openDatePicker)
                 }
             }
-
         }
     }
 }
