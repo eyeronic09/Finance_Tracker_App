@@ -23,10 +23,7 @@ data class HomeScreenUiState(
 )
 
 sealed interface HomeScreenEvent {
-
-
-
-    data class DeleteTransaction(val transaction: Transaction) : HomeScreenEvent
+        data class DeleteTransaction(val transaction: Transaction) : HomeScreenEvent
 
     data class SelectTransaction(val transaction: Transaction) : HomeScreenEvent
 
@@ -72,12 +69,15 @@ class HomeScreenViewModel(
                 viewModelScope.launch {
                     val all = repository.getAllTransactions()
 
-                    val filtered = all.filter {
-                        it.date.toLocalDate() == event.date
-                    }
+                    val filtered = all.filter { it.date.toLocalDate() == event.date }
+                    val income =  filtered.filter { it.type.equals("income", ignoreCase = true) }
+                    val expense = filtered.filter {it.type.equals("expenses"  , true)}
 
-                    _uiState.update {
+
+                    _uiState.update { it ->
                         it.copy(
+                            totalIncome = income.sumOf { it.amount },
+                            totalExpense = expense.sumOf { it.amount },
                             todayDate = event.date,
                             transactions = filtered
                         )

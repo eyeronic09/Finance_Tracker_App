@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.financetracker.HomeScreen.component.BalanceCard
 import com.example.financetracker.HomeScreen.component.CustomDatePicker
 import com.example.financetracker.HomeScreen.component.TransactionDetail
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenEvent
@@ -54,6 +55,11 @@ fun WeekContent(
     )
 
     Column(modifier = modifier) {
+        BalanceCard(
+            balance = state.balance,
+            totalIncome = state.totalIncome,
+            totalExpense = state.totalExpense,
+        )
         WeekCalendar(
             modifier = Modifier.padding( 4.dp),
             weekHeader = {

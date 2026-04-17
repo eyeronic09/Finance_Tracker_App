@@ -1,5 +1,6 @@
 package com.example.financetracker.HomeScreen.component
 
+import android.graphics.Paint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
@@ -34,11 +37,11 @@ fun BalanceCard(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Total Balance",
@@ -46,6 +49,8 @@ fun BalanceCard(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Text(
+                modifier = modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
                 text = "₹%.2f".format(balance),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -59,7 +64,7 @@ fun BalanceCard(
                     Text(
                         text = "Income",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = Color.Green
                     )
                     Text(
                         text = "+₹%.2f".format(totalIncome),
@@ -71,7 +76,7 @@ fun BalanceCard(
                     Text(
                         text = "Expense",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = Color.Red
                     )
                     Text(
                         text = "-₹%.2f".format(totalExpense),
