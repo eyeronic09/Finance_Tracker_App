@@ -28,6 +28,9 @@ interface TransactionDao {
     @Query("DELETE FROM transactions")
     suspend fun deleteAll()
 
+    @Query("SELECT * FROM transactions WHERE strftime('%Y-%m', dateAndTime) = strftime('%Y-%m', :date)")
+    suspend fun getTransactionsByMonth(date: java.time.LocalDateTime): List<TransactionEntity>
+
     @Query("SELECT SUM(amount) FROM transactions WHERE type = 'expense' AND strftime('%Y-%m', dateAndTime) = strftime('%Y-%m', 'now')")
     suspend fun getAllTransactionsExpensesOfThisMonth(): Double?
 }

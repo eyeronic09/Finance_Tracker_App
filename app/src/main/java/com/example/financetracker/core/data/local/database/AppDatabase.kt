@@ -17,7 +17,7 @@ import com.example.financetracker.core.data.local.typeconverter.TypeConverter
         CategoryEntity::class,
         BudgetEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(TypeConverter::class)

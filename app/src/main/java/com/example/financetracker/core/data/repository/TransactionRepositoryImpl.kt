@@ -6,12 +6,12 @@ import com.example.financetracker.core.data.local.dao.BudgetDao
 import com.example.financetracker.core.data.local.mapper.toEntity
 import com.example.financetracker.core.data.local.mapper.toDomain
 import com.example.financetracker.core.data.local.entity.CategoryEntity
-import com.example.financetracker.core.data.local.entity.BudgetEntity
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
 import com.example.financetracker.core.domain.model.Category
 import com.example.financetracker.core.domain.model.Transaction
 import com.example.financetracker.core.domain.repository.TransactionRepository
-import kotlinx.coroutines.coroutineScope
+
+import java.time.LocalDateTime
 
 class TransactionRepositoryImpl(
     private val transactionDao: TransactionDao,
@@ -95,25 +95,24 @@ class TransactionRepositoryImpl(
         return categoryDao.getAll().map { it.toDomain() }
     }
 
-    override suspend fun getBudget(): Double {
-        return budgetDao.getBudget()?.amount ?: 0.0
+    override suspend fun getBudget(local: LocalDateTime): Double? {
+        return budgetDao.getBudgetAmountForCurrentMonth(local)
     }
 
-    override suspend fun setBudget(budget: Budget) {
-        budgetDao.clear()
+    override suspend fun setBudget(budget: Budget , local: LocalDateTime) {
         budgetDao.insert(budget.toEntity())
     }
 
-    override suspend fun minusfromBudget(amount: Double) {
-        val current =  budgetDao.getBudgetAmount()
+    override suspend fun minusfromBudget(amount: Double, local: LocalDateTime) {
+        val current =  budgetDao.getBudgetAmountForCurrentMonth(local)
         val total = current?.minus(amount)
         if (total != null) {
             budgetDao.updateBudgetAmount(total)
         }
     }
 
-    override suspend fun addtoBudget(amount: Double) {
-        val current =  budgetDao.getBudgetAmount()
+    override suspend fun addtoBudget(amount: Double, local :  LocalDateTime) {
+        val current =  budgetDao.getBudgetAmountForCurrentMonth(local)
         val total = current?.plus(amount)
         if (total != null) {
             budgetDao.updateBudgetAmount(total)

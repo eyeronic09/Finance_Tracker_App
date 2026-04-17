@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 
 data class BudgetUiState(
     val budgetId: Int = 0,
-    val amount: Double = 0.0,
+    val amount: Double? = 0.0,
     val startDate: LocalDateTime = LocalDateTime.now(),
     val endDate: LocalDateTime = LocalDateTime.now(),
     val isAddBudgetDialogVisible: Boolean = false,
@@ -49,7 +49,7 @@ class BudgetViewModel(
                 _UiState.update { 
                     it.copy(
                         isAddBudgetDialogVisible = event.isVisible,
-                        newBudgetAmount = if (event.isVisible) it.amount else 0.0
+
                     ) 
                 }
             }
@@ -59,7 +59,7 @@ class BudgetViewModel(
     init {
         viewModelScope.launch {
             _UiState.value = _UiState.value.copy(
-                amount = repository.getBudget()
+                amount = repository.getBudget(LocalDateTime.now())
             )
         }
     }
@@ -71,9 +71,8 @@ class BudgetViewModel(
                 budgetId = _UiState.value.budgetId,
                 amount = _UiState.value.newBudgetAmount,
                 startDate = _UiState.value.startDate,
-                endDate = _UiState.value.endDate
             )
-            repository.setBudget(budget)
+            repository.setBudget(budget , local = LocalDateTime.now())
             _UiState.update { 
                 it.copy(
                     amount = it.newBudgetAmount,

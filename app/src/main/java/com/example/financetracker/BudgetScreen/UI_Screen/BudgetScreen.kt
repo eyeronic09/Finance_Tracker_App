@@ -118,9 +118,11 @@ fun BudgetScreenContent(
     onEvent: (BudgetEvent) -> Unit ,
     modifier: Modifier = Modifier)  {
     Column(modifier = modifier.fillMaxSize()) {
-        BudgetCard(
-            budget = state.amount
-        )
+        state.amount?.let {
+            BudgetCard(
+                budget = it
+            )
+        }
     }
 }
 

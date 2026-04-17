@@ -19,7 +19,8 @@ val appModule = module {
             androidApplication(),
             AppDatabase::class.java,
             "finance_tracker_db"
-        ).build()
+        ).fallbackToDestructiveMigration()
+            .build()
     }
 
     // DAOs

@@ -35,7 +35,6 @@ fun BudgetEntity.toDomain(): Budget {
         budgetId = budgetId,
         amount = amount,
         startDate = startDate,
-        endDate = endDate
     )
 
 }
@@ -45,7 +44,7 @@ fun Budget.toEntity(): BudgetEntity {
         budgetId = budgetId,
         amount = amount,
         startDate = startDate,
-        endDate = endDate
+
     )
 }
 
