@@ -119,4 +119,8 @@ class TransactionRepositoryImpl(
         }
 
     }
+
+    override suspend fun getAllTransactionsExpensesOfThisMonth(): Double? {
+        return transactionDao.getAllTransactionsExpensesOfThisMonth()
+    }
 }

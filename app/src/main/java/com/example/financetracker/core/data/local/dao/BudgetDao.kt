@@ -13,6 +13,7 @@ interface BudgetDao {
     @Query("SELECT * FROM budget ")
     suspend fun getBudget(): BudgetEntity?
 
+
     @Query("SELECT amount FROM budget WHERE strftime('%Y-%m', startDate) = strftime('%Y-%m', :currentDate)")
     suspend fun getBudgetAmountForCurrentMonth(currentDate: LocalDateTime): Double?
 

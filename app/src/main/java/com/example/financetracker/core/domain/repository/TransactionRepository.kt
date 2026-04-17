@@ -18,4 +18,6 @@ interface TransactionRepository {
     suspend fun setBudget(budget: Budget , local : LocalDateTime)
     suspend fun minusfromBudget(amount: Double,local : LocalDateTime)
     suspend fun addtoBudget(amount: Double,local : LocalDateTime)
+
+    suspend fun getAllTransactionsExpensesOfThisMonth() : Double?
 }

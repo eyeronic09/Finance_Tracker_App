@@ -10,12 +10,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
 data class BudgetUiState(
     val budgetId: Int = 0,
     val amount: Double? = 0.0,
+    val spend : Double? = 0.0,
+    val remaining: Double? =0.0,
+
     val startDate: LocalDateTime = LocalDateTime.now(),
     val endDate: LocalDateTime = LocalDateTime.now(),
     val isAddBudgetDialogVisible: Boolean = false,
@@ -25,8 +29,6 @@ data class BudgetUiState(
 sealed class BudgetEvent{
     data class OnAmountChange(val amount: Double) : BudgetEvent()
     data class OnUpdateBudget(val amount: Double) : BudgetEvent()
-    data class OnDeleteBudget(val amount: Double) : BudgetEvent()
-    object OnClearBudget : BudgetEvent()
     object AddBudget : BudgetEvent()
     data class ShowAddBudgetDialog(val isVisible: Boolean) : BudgetEvent()
 }
@@ -38,12 +40,11 @@ class BudgetViewModel(
 
     fun onEvent( event: BudgetEvent) {
         when(event) {
-            is BudgetEvent.OnClearBudget -> TODO()
-            is BudgetEvent.OnDeleteBudget -> TODO()
+
             is BudgetEvent.OnAmountChange -> {
                 _UiState.update { it.copy(newBudgetAmount = event.amount) }
             }
-            is BudgetEvent.OnUpdateBudget -> TODO()
+            is BudgetEvent.OnUpdateBudget -> getAllTheBudget()
             is BudgetEvent.AddBudget -> AddBudget()
             is BudgetEvent.ShowAddBudgetDialog -> {
                 _UiState.update { 
@@ -56,15 +57,23 @@ class BudgetViewModel(
         }
     }
 
-    init {
+    fun getAllTheBudget(){
         viewModelScope.launch {
-            _UiState.value = _UiState.value.copy(
-                amount = repository.getBudget(LocalDateTime.now())
-            )
+            val budget = repository.getBudget(LocalDateTime.now()) ?: 0.0
+            val spend = repository.getAllTransactionsExpensesOfThisMonth() ?: 0.0
+            val remaining = budget - spend
+
+            _UiState.update { it.copy(
+                amount = budget,
+                spend = spend,
+                remaining = remaining
+            ) }
         }
     }
 
-
+    init {
+        getAllTheBudget()
+    }
     fun AddBudget(){
         viewModelScope.launch {
             val budget = Budget(
