@@ -1,5 +1,6 @@
 package com.example.financetracker.HomeScreen.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.core.domain.model.Transaction
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class HomeScreenUiState(
     val transactions: List<Transaction> = emptyList(),
@@ -66,23 +68,7 @@ class HomeScreenViewModel(
 
 
             is HomeScreenEvent.OnDateSelected -> {
-                viewModelScope.launch {
-                    val all = repository.getAllTransactions()
-
-                    val filtered = all.filter { it.date.toLocalDate() == event.date }
-                    val income =  filtered.filter { it.type.equals("income", ignoreCase = true) }
-                    val expense = filtered.filter {it.type.equals("expenses"  , true)}
-
-
-                    _uiState.update { it ->
-                        it.copy(
-                            totalIncome = income.sumOf { it.amount },
-                            totalExpense = expense.sumOf { it.amount },
-                            todayDate = event.date,
-                            transactions = filtered
-                        )
-                    }
-                }
+                getOnDateSelectedTransaction(date = event.date)
             }
             HomeScreenEvent.OpenDatePicker -> {
                 _uiState.update { it ->
@@ -91,4 +77,31 @@ class HomeScreenViewModel(
             }
         }
     }
+    init {
+        getOnDateSelectedTransaction(date = LocalDate.now())
+    }
+    fun getOnDateSelectedTransaction(date: LocalDate){
+        viewModelScope.launch {
+            val all = repository.getAllTransactions()
+
+            val filtered = all.filter { it.date.toLocalDate() == date }
+            val income =  filtered.filter { it.type.equals("income", ignoreCase = true) }
+            val expense = filtered.filter { it.type.equals("expense"  , true) }
+
+            val totalIncome = income.sumOf { it.amount }
+            val totalExpense = expense.sumOf { it.amount }
+
+            _uiState.update { it ->
+                it.copy(
+                    balance = totalIncome - totalExpense,
+                    totalIncome = totalIncome,
+                    totalExpense = totalExpense,
+                    todayDate = date,
+                    transactions = filtered
+                )
+            }
+            Log.d("BalanceCard", _uiState.value.toString())
+        }
+    }
+
 }

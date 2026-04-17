@@ -96,19 +96,6 @@ fun HomeScreenContent(
     onAction: (HomeScreenEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (state.openDatePicker) {
-        CustomDatePicker(
-            onDismiss = { onAction(HomeScreenEvent.OpenDatePicker) },
-            onDateSelected = { millis ->
-                millis?.let {
-                    val date = Instant.ofEpochMilli(it)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-                    onAction(HomeScreenEvent.OnDateSelected(date))
-                }
-            }
-        )
-    }
 
     WeekContent(
         state = state,
