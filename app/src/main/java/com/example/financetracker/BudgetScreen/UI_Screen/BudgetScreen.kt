@@ -1,7 +1,5 @@
-
 package com.example.financetracker.BudgetScreen.UI_Screen
 
-import android.icu.text.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
@@ -22,21 +21,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.example.financetracker.R
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -44,11 +40,9 @@ object BudgetTab : Tab {
     override val options: TabOptions
         @Composable
         get() = TabOptions(
-                index = 1u,
-                title = "Budget",
-                icon = painterResource(
-                    id = R.drawable.outline_money_24,
-            )
+            index = 1u,
+            title = "Budget",
+            icon = painterResource(id = R.drawable.outline_money_24)
         )
 
     @Composable
@@ -68,7 +62,6 @@ class _BudgetScreen : Screen {
 fun BudgetScreenRoute(viewModel: BudgetViewModel = koinViewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val event = viewModel::onEvent
-    val navigator = LocalNavigator.current
 
     BudgetScreen(
         state = state,
@@ -76,26 +69,23 @@ fun BudgetScreenRoute(viewModel: BudgetViewModel = koinViewModel()) {
     )
 }
 
-
-
-
 @Composable
 fun BudgetScreen(
     state: BudgetUiState,
     onEvent: (BudgetEvent) -> Unit
 ) {
     Scaffold(
-       floatingActionButton = {
-           FloatingActionButton(
-               onClick = { onEvent(BudgetEvent.ShowAddBudgetDialog(true)) },
-               content = { Text("+") }
-           )
-       }
-    ) { it ->
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { onEvent(BudgetEvent.ShowAddBudgetDialog(true)) },
+                content = { Text("+") }
+            )
+        }
+    ) { paddingValues ->
         BudgetScreenContent(
             state = state,
             onEvent = onEvent,
-            modifier = Modifier.padding(it)
+            modifier = Modifier.padding(paddingValues)
         )
     }
 
@@ -111,9 +101,10 @@ fun BudgetScreen(
 
 @Composable
 fun BudgetScreenContent(
-    state: BudgetUiState ,
-    onEvent: (BudgetEvent) -> Unit ,
-    modifier: Modifier = Modifier)  {
+    state: BudgetUiState,
+    onEvent: (BudgetEvent) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(modifier = modifier.fillMaxSize()) {
         state.amount?.let {
             BudgetCard(
@@ -124,27 +115,29 @@ fun BudgetScreenContent(
                 endDate = state.endDate
             )
         }
+
+        LazyColumn(
+            modifier = modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            items(state.listOfCategory) { it ->
+                it.categoryName
+                it.icon
+                it.sum
+
+            }
+        }
     }
 }
-
-//@Preview(showBackground = true)
-@Composable
-private fun BudgetScreenContentPreview() {
-    BudgetScreenContent(
-        state = BudgetUiState(amount = 5000.0),
-        onEvent = {}
-    )
-}
-
 
 @Composable
 fun BudgetCard(
     budget: Double,
     spent: Double?,
     remaining: Double?,
-    startDate : LocalDateTime,
-    endDate : LocalDateTime
-
+    startDate: LocalDateTime,
+    endDate: LocalDateTime
 ) {
     Card(
         modifier = Modifier
@@ -164,7 +157,7 @@ fun BudgetCard(
             )
 
             Text(
-                text = "₹${budget}",
+                text = "₹$budget",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp)
@@ -191,8 +184,6 @@ fun BudgetCard(
                 )
             }
 
-
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -204,7 +195,7 @@ fun BudgetCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${spent}",
+                        text = "$spent",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.error,
@@ -219,7 +210,7 @@ fun BudgetCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${remaining}",
+                        text = "$remaining",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,

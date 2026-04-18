@@ -8,6 +8,8 @@ import com.example.financetracker.core.data.local.mapper.toDomainForCategory
 import com.example.financetracker.core.data.local.mapper.toDomain
 import com.example.financetracker.core.data.local.entity.CategoryEntity
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
+import com.example.financetracker.BudgetScreen.Domain.model.CategoryBudget
+import com.example.financetracker.core.data.local.mapper.toDomainForBudgets
 import com.example.financetracker.core.domain.model.Category
 import com.example.financetracker.core.domain.model.Transaction
 import com.example.financetracker.core.domain.repository.TransactionRepository
@@ -104,13 +106,15 @@ class TransactionRepositoryImpl(
         return categoryDao.getAll().map { it.toDomainForCategory() }
     }
 
-    override suspend fun getAllTheTransitionOfCurrentMonths(): List<Transaction> {
+    override suspend fun getAllTheTransitionOfCurrentMonths(): List<CategoryBudget> {
         return transactionDao.getTransactionsByMonth(LocalDateTime.now()).map { transactioneEntity ->
             val category = categoryDao.getById(transactioneEntity.categoryId)
-            transactioneEntity.toDomainForCategory(category?.name ?:"Unknow")
+            transactioneEntity.toDomainForBudgets()
 
         }
     }
+
+
 
     override suspend fun getBudget(local: LocalDateTime): Double? {
         return budgetDao.getBudgetAmountForCurrentMonth(local)

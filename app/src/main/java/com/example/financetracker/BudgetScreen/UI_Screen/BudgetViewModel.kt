@@ -4,15 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
+import com.example.financetracker.BudgetScreen.Domain.model.CategoryBudget
 import com.example.financetracker.core.domain.model.Category
-import com.example.financetracker.core.domain.model.Transaction
 import com.example.financetracker.core.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 
@@ -21,7 +20,7 @@ data class BudgetUiState(
     val amount: Double? = 0.0,
     val spend : Double? = 0.0,
     val remaining: Double? =0.0,
-    val listOfCategory : List<Category> = emptyList(),
+    val listOfCategory : List<CategoryBudget> = emptyList(),
     val startDate: LocalDateTime = LocalDateTime.now().withDayOfMonth(1),
     val endDate: LocalDateTime = LocalDateTime.now().plusMonths(1),
     val isAddBudgetDialogVisible: Boolean = false,
@@ -76,7 +75,16 @@ class BudgetViewModel(
         viewModelScope.launch {
             getAllTheBudget()
             Log.d("category" , repository.getAllTheTransitionOfCurrentMonths().toString())
+            calculateCategoryTotals()
         }
+    }
+    fun calculateCategoryTotals(){
+        viewModelScope.launch {
+            val data = repository.getAllTheTransitionOfCurrentMonths()
+            _UiState.update { it -> it.copy(listOfCategory = data) }
+            Log.d("data" , "${data.toString()}")
+        }
+
     }
     fun AddBudget(){
         viewModelScope.launch {

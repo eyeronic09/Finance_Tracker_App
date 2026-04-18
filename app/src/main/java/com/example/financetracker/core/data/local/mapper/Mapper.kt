@@ -1,7 +1,9 @@
 package com.example.financetracker.core.data.local.mapper
 
 import com.example.financetracker.AddTransaction.TransactionType
+import com.example.financetracker.AddTransaction.compontent.getCategoryIcon
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
+import com.example.financetracker.BudgetScreen.Domain.model.CategoryBudget
 import com.example.financetracker.core.data.local.entity.BudgetEntity
 import com.example.financetracker.core.data.local.entity.CategoryEntity
 import com.example.financetracker.core.data.local.entity.TransactionEntity
@@ -68,7 +70,7 @@ fun TransactionEntity.toDomain(categoryName: String = ""): Transaction {
             type = type.name,
         )
     }
-
+    
     fun CategoryEntity.toDomainForCategory(): Category {
         return Category(
             id = categoryId,
@@ -76,3 +78,10 @@ fun TransactionEntity.toDomain(categoryName: String = ""): Transaction {
             type = TransactionType.fromString(type)
         )
     }
+fun TransactionEntity.toDomainForBudgets(categoryName: String = "") : CategoryBudget {
+    return CategoryBudget(
+        icon = getCategoryIcon(categoryName),
+        categoryName = categoryName,
+        sum = amount
+    )
+}

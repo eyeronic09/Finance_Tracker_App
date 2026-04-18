@@ -1,6 +1,7 @@
 package com.example.financetracker.core.domain.repository
 
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
+import com.example.financetracker.BudgetScreen.Domain.model.CategoryBudget
 import com.example.financetracker.core.domain.model.Category
 import com.example.financetracker.core.domain.model.Transaction
 import java.time.LocalDateTime
@@ -13,7 +14,7 @@ interface TransactionRepository {
     suspend fun deleteTransaction(transaction: Transaction)
     suspend fun deleteAllTransactions()
     suspend fun getAlltheCategory(): List<Category>
-    suspend fun getAllTheTransitionOfCurrentMonths(): List<Transaction>
+    suspend fun getAllTheTransitionOfCurrentMonths(): List<CategoryBudget>
 
 
     // Budget
