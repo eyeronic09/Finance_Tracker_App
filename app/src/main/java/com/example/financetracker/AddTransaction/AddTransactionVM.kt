@@ -126,7 +126,7 @@ class AddTransactionVM (val categoryRepository: TransactionRepository) : ViewMod
                         date = state.selectedDate,
                         note = state.transactionNote.toString()
                     )
-                    categoryRepository.insertTransaction(newTransaction)
+                    categoryRepository.insertTransaction(newTransaction, local = _uiState.value.selectedDate )
                     _event.emit("Saved successfully")
                     _uiState.update { it ->
                         it.copy(

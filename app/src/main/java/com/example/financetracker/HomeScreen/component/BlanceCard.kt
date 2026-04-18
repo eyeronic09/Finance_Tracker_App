@@ -1,6 +1,5 @@
 package com.example.financetracker.HomeScreen.component
 
-import android.graphics.Paint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

@@ -1,6 +1,7 @@
 
 package com.example.financetracker.BudgetScreen.UI_Screen
 
+import android.icu.text.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
@@ -20,8 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
@@ -30,7 +34,11 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.example.financetracker.R
+import com.example.financetracker.ui.theme.FinanceTrackerTheme
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 object BudgetTab : Tab {
     override val options: TabOptions
@@ -111,7 +119,9 @@ fun BudgetScreenContent(
             BudgetCard(
                 budget = it,
                 spent = state.spend,
-                remaining = state.remaining
+                remaining = state.remaining,
+                startDate = state.startDate,
+                endDate = state.endDate
             )
         }
     }
@@ -131,7 +141,10 @@ private fun BudgetScreenContentPreview() {
 fun BudgetCard(
     budget: Double,
     spent: Double?,
-    remaining: Double?
+    remaining: Double?,
+    startDate : LocalDateTime,
+    endDate : LocalDateTime
+
 ) {
     Card(
         modifier = Modifier
@@ -161,6 +174,7 @@ fun BudgetCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(top = 8.dp)
             ) {
+                val dateTimeFormat = DateTimeFormatter.ofPattern("MM-yyyy")
                 Box(
                     modifier = Modifier
                         .size(8.dp)
@@ -170,7 +184,7 @@ fun BudgetCard(
                         )
                 )
                 Text(
-                    text = "ACTIVE PERIOD",
+                    text = "ACTIVE PERIOD ${dateTimeFormat.format(startDate)} - ${dateTimeFormat.format(endDate)}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(start = 6.dp)
@@ -214,5 +228,19 @@ fun BudgetCard(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BudgetCardPreview() {
+    FinanceTrackerTheme {
+        BudgetCard(
+            budget = 10000.0,
+            spent = 2500.0,
+            remaining = 7500.0,
+            startDate = LocalDateTime.now(),
+            endDate = LocalDateTime.now()
+        )
     }
 }

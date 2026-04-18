@@ -14,8 +14,8 @@ interface BudgetDao {
     suspend fun getBudget(): BudgetEntity?
 
 
-    @Query("SELECT amount FROM budget WHERE strftime('%Y-%m', startDate) = strftime('%Y-%m', :currentDate)")
-    suspend fun getBudgetAmountForCurrentMonth(currentDate: LocalDateTime): Double?
+    @Query("SELECT amount FROM budget WHERE :date >= startDate AND :date <= endDate")
+    suspend fun getBudgetAmountForCurrentMonth(date: LocalDateTime): Double?
 
     @Insert
     suspend fun insert(budget: BudgetEntity)
@@ -23,8 +23,12 @@ interface BudgetDao {
     @Update
     suspend fun update(budget: BudgetEntity)
 
-    @Query("UPDATE budget SET amount = :amount")
+    @Query("UPDATE budget SET amount = amount + :amount")
     suspend fun updateBudgetAmount(amount: Double)
+
+    @Query("UPDATE budget SET amount = amount - :amount")
+    suspend fun updateBudgetAmountMinus(amount: Double)
+
 
     @Query("DELETE FROM budget")
     suspend fun clear()

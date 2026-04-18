@@ -4,6 +4,7 @@ import com.example.financetracker.core.data.local.dao.TransactionDao
 import com.example.financetracker.core.data.local.dao.CategoryDao
 import com.example.financetracker.core.data.local.dao.BudgetDao
 import com.example.financetracker.core.data.local.mapper.toEntity
+import com.example.financetracker.core.data.local.mapper.toDomainForCategory
 import com.example.financetracker.core.data.local.mapper.toDomain
 import com.example.financetracker.core.data.local.entity.CategoryEntity
 import com.example.financetracker.BudgetScreen.Domain.model.Budget
@@ -32,11 +33,11 @@ class TransactionRepositoryImpl(
         return transactionDao.getAllTransactions().map { transactionEntity ->
             val category = categoryDao.getById(transactionEntity.categoryId)
             // If the category entity is not found, set the category name to "Unknown"
-            transactionEntity.toDomain(category?.name ?: "Unknown")
+            transactionEntity.toDomainForCategory(category?.name ?: "Unknown")
         }
     }
 
-    override suspend fun insertTransaction(transaction: Transaction) {
+    override suspend fun insertTransaction(transaction: Transaction , local: LocalDateTime) {
         // Find or create category
         val categories = categoryDao.getAll()
         val categoryEntity = categories.find { it.name == transaction.category }
@@ -47,7 +48,15 @@ class TransactionRepositoryImpl(
         val transactionEntity = transaction.toEntity().copy(
             categoryId = categoryEntity.categoryId
         )
-        transactionDao.insert(transactionEntity)
+        val currentBudget = budgetDao.getBudgetAmountForCurrentMonth(local )
+        if (transaction.type == "income"){
+            budgetDao.updateBudgetAmount(transaction.amount)
+            transactionDao.insert(transactionEntity)
+        }else {
+            budgetDao.updateBudgetAmountMinus(transaction.amount)
+            transactionDao.insert(transactionEntity)
+        }
+
     }
 
     override suspend fun updateTransaction(transaction: Transaction) {
@@ -92,7 +101,15 @@ class TransactionRepositoryImpl(
                 categoryDao.insert(it)
             }
         }
-        return categoryDao.getAll().map { it.toDomain() }
+        return categoryDao.getAll().map { it.toDomainForCategory() }
+    }
+
+    override suspend fun getAllTheTransitionOfCurrentMonths(): List<Transaction> {
+        return transactionDao.getTransactionsByMonth(LocalDateTime.now()).map { transactioneEntity ->
+            val category = categoryDao.getById(transactioneEntity.categoryId)
+            transactioneEntity.toDomainForCategory(category?.name ?:"Unknow")
+
+        }
     }
 
     override suspend fun getBudget(local: LocalDateTime): Double? {

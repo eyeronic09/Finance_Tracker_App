@@ -8,7 +8,7 @@ import com.example.financetracker.core.data.local.entity.TransactionEntity
 import com.example.financetracker.core.domain.model.Category
 import com.example.financetracker.core.domain.model.Transaction
 
-fun TransactionEntity.toDomain(categoryName: String): Transaction {
+fun TransactionEntity.toDomainForCategory(categoryName: String): Transaction {
     return Transaction(
         id = transactionId,
         amount = amount,
@@ -30,36 +30,49 @@ fun Transaction.toEntity(): TransactionEntity {
     )
 }
 
-fun BudgetEntity.toDomain(): Budget {
-    return Budget(
-        budgetId = budgetId,
+fun TransactionEntity.toDomain(categoryName: String = ""): Transaction {
+    return Transaction(
+        id = transactionId,
         amount = amount,
-        startDate = startDate,
-    )
-
-}
-
-fun Budget.toEntity(): BudgetEntity {
-    return BudgetEntity(
-        budgetId = budgetId,
-        amount = amount,
-        startDate = startDate,
-
+        type = type,
+        category = categoryName,
+        date = dateAndTime,
+        note = note
     )
 }
 
-fun Category.toEntity(): CategoryEntity{
-    return CategoryEntity(
-        categoryId = id,
-        name = name,
-        type = type.name,
-    )
-}
+    fun BudgetEntity.toDomainForCategory(): Budget {
+        return Budget(
+            budgetId = budgetId,
+            amount = amount,
+            startDate = startDate,
+            endDate = endDate
+        )
 
-fun CategoryEntity.toDomain(): Category{
-    return Category(
-        id = categoryId,
-        name = name,
-        type = TransactionType.fromString(type)
-    )
-}
+    }
+
+    fun Budget.toEntity(): BudgetEntity {
+        return BudgetEntity(
+            budgetId = budgetId,
+            amount = amount,
+            startDate = startDate,
+            endDate = endDate
+
+        )
+    }
+
+    fun Category.toEntity(): CategoryEntity {
+        return CategoryEntity(
+            categoryId = id,
+            name = name,
+            type = type.name,
+        )
+    }
+
+    fun CategoryEntity.toDomainForCategory(): Category {
+        return Category(
+            id = categoryId,
+            name = name,
+            type = TransactionType.fromString(type)
+        )
+    }

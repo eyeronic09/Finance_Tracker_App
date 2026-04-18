@@ -6,12 +6,15 @@ import com.example.financetracker.core.domain.model.Transaction
 import java.time.LocalDateTime
 
 interface TransactionRepository {
+    //Transaction
     suspend fun getAllTransactions(): List<Transaction>
-    suspend fun insertTransaction(transaction: Transaction)
+    suspend fun insertTransaction(transaction: Transaction , local: LocalDateTime)
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
     suspend fun deleteAllTransactions()
     suspend fun getAlltheCategory(): List<Category>
+    suspend fun getAllTheTransitionOfCurrentMonths(): List<Transaction>
+
 
     // Budget
     suspend fun getBudget(local: LocalDateTime): Double?

@@ -10,4 +10,5 @@ data class BudgetEntity(
     val budgetId: Int = 0,
     val amount: Double,
     val startDate: LocalDateTime,
+    val endDate : LocalDateTime
 )
