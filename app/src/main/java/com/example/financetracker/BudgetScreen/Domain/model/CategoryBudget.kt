@@ -4,6 +4,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 data class CategoryBudget(
     val icon: ImageVector,
-    val categoryName : String,
-    val sum : Double
+    val categoryName: String,
+    val sum: Double
 )

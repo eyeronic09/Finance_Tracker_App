@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +32,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.example.financetracker.BudgetScreen.compontent.BudgetCard
+import com.example.financetracker.BudgetScreen.compontent.CategoryBudgetCard
 import com.example.financetracker.R
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
 import org.koin.androidx.compose.koinViewModel
@@ -105,119 +109,46 @@ fun BudgetScreenContent(
     onEvent: (BudgetEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
-        state.amount?.let {
-            BudgetCard(
-                budget = it,
-                spent = state.spend,
-                remaining = state.remaining,
-                startDate = state.startDate,
-                endDate = state.endDate
-            )
-        }
-
-        LazyColumn(
-            modifier = modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            items(state.listOfCategory) { it ->
-                it.categoryName
-                it.icon
-                it.sum
-
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 16.dp)
+    ) {
+        item {
+            state.amount?.let {
+                BudgetCard(
+                    budget = it,
+                    spent = state.spend,
+                    remaining = state.remaining,
+                    startDate = state.startDate,
+                    endDate = state.endDate
+                )
             }
         }
-    }
-}
 
-@Composable
-fun BudgetCard(
-    budget: Double,
-    spent: Double?,
-    remaining: Double?,
-    startDate: LocalDateTime,
-    endDate: LocalDateTime
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "MONTHLY BUDGET",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            Text(
-                text = "₹$budget",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-
+        item {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                val dateTimeFormat = DateTimeFormatter.ofPattern("MM-yyyy")
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = CircleShape
-                        )
+                Text(
+                    text = "This Months expenses",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "ACTIVE PERIOD ${dateTimeFormat.format(startDate)} - ${dateTimeFormat.format(endDate)}",
-                    style = MaterialTheme.typography.labelSmall,
+                    text = "VIEW ALL",
+                    style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(start = 6.dp)
+                    fontWeight = FontWeight.Bold
                 )
             }
+        }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "SPENT",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "$spent",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "REMAINING",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "$remaining",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-            }
+        items(state.listOfCategory) { category ->
+            CategoryBudgetCard(categoryBudget = category)
         }
     }
 }

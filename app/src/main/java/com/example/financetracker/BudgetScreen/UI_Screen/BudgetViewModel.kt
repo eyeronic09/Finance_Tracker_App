@@ -82,7 +82,7 @@ class BudgetViewModel(
         viewModelScope.launch {
             val data = repository.getAllTheTransitionOfCurrentMonths()
             _UiState.update { it -> it.copy(listOfCategory = data) }
-            Log.d("data" , "${data.toString()}")
+
         }
 
     }

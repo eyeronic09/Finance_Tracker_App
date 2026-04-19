@@ -1,5 +1,6 @@
 package com.example.financetracker.core.data.repository
 
+import com.example.financetracker.AddTransaction.compontent.getCategoryIcon
 import com.example.financetracker.core.data.local.dao.TransactionDao
 import com.example.financetracker.core.data.local.dao.CategoryDao
 import com.example.financetracker.core.data.local.dao.BudgetDao
@@ -107,10 +108,17 @@ class TransactionRepositoryImpl(
     }
 
     override suspend fun getAllTheTransitionOfCurrentMonths(): List<CategoryBudget> {
-        return transactionDao.getTransactionsByMonth(LocalDateTime.now()).map { transactioneEntity ->
-            val category = categoryDao.getById(transactioneEntity.categoryId)
-            transactioneEntity.toDomainForBudgets()
-
+        val transactions = transactionDao.getTransactionsByMonth(LocalDateTime.now())
+        
+        return transactions.groupBy { it.categoryId }.map { (categoryId, categoryTransactions) ->
+            val category = categoryDao.getById(categoryId)
+            val categoryName = category?.name ?: "Unknown"
+            val totalSum = categoryTransactions.sumOf { it.amount }
+            CategoryBudget(
+                icon = getCategoryIcon(categoryName),
+                categoryName = categoryName,
+                sum = totalSum
+            )
         }
     }
 
