@@ -19,13 +19,14 @@ data class HomeScreenUiState(
     val selectedTransaction: Transaction? = null,
     val todayDate: LocalDate,
     val isLoading: Boolean = false,
+    val TotalBalances : Double = 0.0,
     val totalIncome: Double = 0.0,
     val totalExpense: Double = 0.0,
     val balance: Double = 0.0
 )
 
 sealed interface HomeScreenEvent {
-        data class DeleteTransaction(val transaction: Transaction) : HomeScreenEvent
+    data class DeleteTransaction(val transaction: Transaction) : HomeScreenEvent
 
     data class SelectTransaction(val transaction: Transaction) : HomeScreenEvent
 
@@ -66,7 +67,6 @@ class HomeScreenViewModel(
                 }
             }
 
-
             is HomeScreenEvent.OnDateSelected -> {
                 getOnDateSelectedTransaction(date = event.date)
             }
@@ -79,7 +79,18 @@ class HomeScreenViewModel(
     }
     init {
         getOnDateSelectedTransaction(date = LocalDate.now())
+        updateTotalBalance()
+
     }
+
+    fun updateTotalBalance(){
+        viewModelScope.launch {
+            _uiState.update { it.copy(TotalBalances = repository.getBudget(LocalDateTime.now())?: 0.0) }
+
+        }
+    }
+
+
     fun getOnDateSelectedTransaction(date: LocalDate){
         viewModelScope.launch {
             val all = repository.getAllTransactions()
