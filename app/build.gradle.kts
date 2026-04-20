@@ -86,6 +86,7 @@ dependencies {
     // Charts
     implementation(libs.compose.charts)
     implementation("com.kizitonwose.calendar:compose:2.6.0")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 
 // Test

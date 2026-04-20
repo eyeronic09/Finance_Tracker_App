@@ -1,6 +1,7 @@
 package com.example.financetracker.BudgetScreen.UI_Screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -78,6 +80,7 @@ fun BudgetScreen(
     state: BudgetUiState,
     onEvent: (BudgetEvent) -> Unit
 ) {
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -109,6 +112,7 @@ fun BudgetScreenContent(
     onEvent: (BudgetEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val navigator = LocalNavigator.current
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 16.dp)
@@ -139,6 +143,7 @@ fun BudgetScreenContent(
                     fontWeight = FontWeight.Bold
                 )
                 Text(
+                    modifier = modifier.clickable(onClick = { navigator?.push(_BudgetChartScreen()) }),
                     text = "VIEW ALL",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,

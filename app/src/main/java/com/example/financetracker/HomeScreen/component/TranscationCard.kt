@@ -98,7 +98,7 @@ fun TransactionDetail(
 
                 if (transaction.note.isNotBlank()) {
                     Text(
-                        text = "No Note Added",
+                        text = transaction.note,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
@@ -127,9 +127,9 @@ fun TransactionDetail(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Expense")
 @Composable
-fun TransactionDetailPreview() {
+fun TransactionDetailExpensePreview() {
     FinanceTrackerTheme {
         TransactionDetail(
             transaction = Transaction(
@@ -139,6 +139,24 @@ fun TransactionDetailPreview() {
                 category = "Food",
                 date = LocalDateTime.now(),
                 note = "Dinner with friends"
+            ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Income")
+@Composable
+fun TransactionDetailIncomePreview() {
+    FinanceTrackerTheme {
+        TransactionDetail(
+            transaction = Transaction(
+                id = 2,
+                amount = 50000.0,
+                type = "income",
+                category = "Salary",
+                date = LocalDateTime.now(),
+                note = "Monthly Salary"
             ),
             onClick = {}
         )
