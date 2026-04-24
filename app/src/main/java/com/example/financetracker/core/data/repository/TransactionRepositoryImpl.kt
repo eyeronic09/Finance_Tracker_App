@@ -51,7 +51,6 @@ class TransactionRepositoryImpl(
         val transactionEntity = transaction.toEntity().copy(
             categoryId = categoryEntity.categoryId
         )
-        val currentBudget = budgetDao.getBudgetAmountForCurrentMonth(local )
         if (transaction.type == "income"){
             budgetDao.updateBudgetAmount(transaction.amount , local)
             transactionDao.insert(transactionEntity)

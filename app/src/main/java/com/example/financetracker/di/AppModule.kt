@@ -8,8 +8,10 @@ import com.example.financetracker.HomeScreen.viewmodel.HomeScreenViewModel
 import com.example.financetracker.core.data.local.database.AppDatabase
 import com.example.financetracker.core.data.repository.TransactionRepositoryImpl
 import com.example.financetracker.core.domain.repository.TransactionRepository
+import com.example.financetracker.core.worker.MonthlyRollover
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
 
 val appModule = module {
@@ -43,4 +45,7 @@ val appModule = module {
     viewModel { BudgetViewModel(repository = get()) }
     viewModel { AddTransactionVM(categoryRepository = get()) }
     viewModel { BudgetChartVM(repository = get()) }
+
+    // Worker
+    worker { MonthlyRollover(appContext = get(), params = get(), repository = get()) }
 }

@@ -59,7 +59,6 @@ fun TransactionEntity.toDomain(categoryName: String = ""): Transaction {
             amount = amount,
             startDate = startDate,
             endDate = endDate
-
         )
     }
 

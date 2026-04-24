@@ -64,6 +64,7 @@ dependencies {
     val koinVersion = "3.5.3"
     implementation("io.insert-koin:koin-android:$koinVersion")
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+    implementation("io.insert-koin:koin-androidx-workmanager:$koinVersion")
 
     // Voyager Navigation
     val voyagerVersion = "1.0.0"
@@ -72,6 +73,8 @@ dependencies {
     implementation("cafe.adriel.voyager:voyager-koin:$voyagerVersion")
     implementation("cafe.adriel.voyager:voyager-screenmodel:$voyagerVersion")
     implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
+
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
 
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
