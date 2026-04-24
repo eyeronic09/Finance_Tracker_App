@@ -53,10 +53,10 @@ class TransactionRepositoryImpl(
         )
         val currentBudget = budgetDao.getBudgetAmountForCurrentMonth(local )
         if (transaction.type == "income"){
-            budgetDao.updateBudgetAmount(transaction.amount)
+            budgetDao.updateBudgetAmount(transaction.amount , local)
             transactionDao.insert(transactionEntity)
         }else {
-            budgetDao.updateBudgetAmountMinus(transaction.amount)
+            budgetDao.updateBudgetAmountMinus(transaction.amount , local)
             transactionDao.insert(transactionEntity)
         }
 
@@ -122,6 +122,15 @@ class TransactionRepositoryImpl(
         }
     }
 
+    override suspend fun getPreviousMonthBudget(previousMonthDate: LocalDateTime): Double? {
+        return budgetDao.getPreviousMonthBudget(previousMonthDate = LocalDateTime.now().minusMonths(1))
+    }
+
+    override suspend fun getCurrentMonthsBudgetForRollOver(date: LocalDateTime): Double {
+        val previousBalance = getPreviousMonthBudget(date.minusMonths(1)) ?: 0.0
+        budgetDao.updateBudgetAmount(previousBalance , date)
+        return budgetDao.getBudgetAmountForCurrentMonth(date) ?: 0.0
+    }
 
 
     override suspend fun getBudget(local: LocalDateTime): Double? {
@@ -136,7 +145,7 @@ class TransactionRepositoryImpl(
         val current =  budgetDao.getBudgetAmountForCurrentMonth(local)
         val total = current?.minus(amount)
         if (total != null) {
-            budgetDao.updateBudgetAmount(total)
+            budgetDao.updateBudgetAmount(total , local)
         }
     }
 
@@ -144,7 +153,7 @@ class TransactionRepositoryImpl(
         val current =  budgetDao.getBudgetAmountForCurrentMonth(local)
         val total = current?.plus(amount)
         if (total != null) {
-            budgetDao.updateBudgetAmount(total)
+            budgetDao.updateBudgetAmount(amount , local)
         }
 
     }

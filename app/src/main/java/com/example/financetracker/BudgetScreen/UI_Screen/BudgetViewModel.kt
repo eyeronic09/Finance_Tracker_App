@@ -57,17 +57,25 @@ class BudgetViewModel(
         }
     }
 
-    fun getAllTheBudget(){
+    fun getAllTheBudget() {
         viewModelScope.launch {
-            val budget = repository.getBudget(LocalDateTime.now()) ?: 0.0
+            val now = LocalDateTime.now()
+
+            // 1. Check if we need to rollover from previous month
+            val prevRemainder = repository.getPreviousMonthBudget(now) ?: 0.0
+            if (prevRemainder > 0) {
+                repository.getCurrentMonthsBudgetForRollOver(now)
+            }
+
+            // 2. ALWAYS fetch the final value from the database for the UI
+            val budget = repository.getBudget(now) ?: 0.0
             val spend = repository.getAllTransactionsExpensesOfThisMonth() ?: 0.0
-            val remaining = budget - spend
 
             _UiState.update { it.copy(
                 amount = budget,
                 spend = spend,
-                remaining = remaining
-            ) }
+                remaining = budget - spend
+            )}
         }
     }
 
