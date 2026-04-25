@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Finance Tracker</string>
+    <string name="budget_channel_name">Budget Alerts</string>
+    <string name="budget_channel_description">Notifications for budget limits and spending alerts</string>
 </resources>

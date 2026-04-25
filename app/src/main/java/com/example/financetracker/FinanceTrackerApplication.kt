@@ -2,6 +2,7 @@ package com.example.financetracker
 
 import android.app.Application
 import com.example.financetracker.core.worker.MonthlyRollover
+import com.example.financetracker.core.worker.NotificationHelper
 import com.example.financetracker.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -19,6 +20,7 @@ class FinanceTrackerApplication : Application() {
             modules(appModule)
         }
         
+        NotificationHelper.createNotificationChannel(this)
         MonthlyRollover.scheduleNextMonth(this)
     }
 }
