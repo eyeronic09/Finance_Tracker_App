@@ -17,7 +17,7 @@ interface TransactionRepository {
     suspend fun getAllTheTransitionOfCurrentMonths(): List<CategoryBudget>
     suspend fun getPreviousMonthBudget(previousMonthDate: LocalDateTime): Double?
     suspend fun getCurrentMonthsBudgetForRollOver(date: LocalDateTime): Double?
-
+    suspend fun getBudgetAlertNotification(): Double?
 
     // Budget
     suspend fun getBudget(local: LocalDateTime): Double?

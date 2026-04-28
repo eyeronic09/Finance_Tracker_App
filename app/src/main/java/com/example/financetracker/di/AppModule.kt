@@ -9,6 +9,7 @@ import com.example.financetracker.core.data.local.database.AppDatabase
 import com.example.financetracker.core.data.repository.TransactionRepositoryImpl
 import com.example.financetracker.core.domain.repository.TransactionRepository
 import com.example.financetracker.core.worker.MonthlyRollover
+import com.example.financetracker.core.worker.NotificationWorker
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
@@ -48,4 +49,5 @@ val appModule = module {
 
     // Worker
     worker { MonthlyRollover(appContext = get(), params = get(), repository = get()) }
+    worker { NotificationWorker(appContext = get(), workerParams = get(), transactionRepository = get()) }
 }

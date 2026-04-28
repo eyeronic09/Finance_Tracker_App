@@ -67,7 +67,10 @@ class BudgetViewModel(
                 amount = budget,
                 spend = spend,
                 remaining = budget - spend
-            )}
+            )
+            }
+            Log.d("FinanceTrackerWork", "BudgetViewModel: budget=$budget, spend=$spend , remaining = ${budget - spend}")
+
         }
     }
 
@@ -94,10 +97,11 @@ class BudgetViewModel(
                 startDate = _UiState.value.startDate,
                 endDate = _UiState.value.endDate
             )
+            Log.d("FinanceTrackerWork", "BudgetViewModel: Adding budget ${budget.amount}")
             repository.setBudget(budget , local = LocalDateTime.now())
+            getAllTheBudget()
             _UiState.update { 
                 it.copy(
-                    amount = it.newBudgetAmount,
                     isAddBudgetDialogVisible = false
                 ) 
             }

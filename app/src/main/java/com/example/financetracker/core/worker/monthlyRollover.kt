@@ -1,6 +1,7 @@
 package com.example.financetracker.core.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
@@ -19,11 +20,14 @@ class MonthlyRollover(
     private val repository : TransactionRepository
 ) : CoroutineWorker(appContext, params) {
     override suspend fun doWork(): Result {
+        Log.d("FinanceTrackerWork", "MonthlyRollover: doWork started")
         return try {
             repository.getCurrentMonthsBudgetForRollOver(LocalDateTime.now())
+            Log.d("FinanceTrackerWork", "MonthlyRollover: Rollover successful, scheduling next month")
             scheduleNextMonth(applicationContext)
             Result.success()
         } catch (e: Exception) {
+            Log.e("FinanceTrackerWork", "MonthlyRollover: Error during rollover", e)
             Result.retry()
         }
     }
@@ -38,6 +42,8 @@ class MonthlyRollover(
                 .withSecond(0)
                 .withNano(0)
             val delay = Duration.between(now, nextFirstOfMonth).toMillis()
+            
+            Log.d("FinanceTrackerWork", "MonthlyRollover: Scheduling next rollover in ${delay/1000} seconds")
 
             val nextRequest = OneTimeWorkRequestBuilder<MonthlyRollover>()
                 .setInitialDelay(delay, TimeUnit.MILLISECONDS)
