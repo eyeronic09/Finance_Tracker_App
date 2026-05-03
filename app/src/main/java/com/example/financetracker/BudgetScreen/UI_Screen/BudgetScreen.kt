@@ -104,6 +104,16 @@ fun BudgetScreen(
             onConfirm = { onEvent(BudgetEvent.AddBudget) }
         )
     }
+
+    if (state.isCategoryLimitDialogVisible) {
+        CategoryLimitDialog(
+            categoryName = state.selectedCategory?.categoryName ?: "",
+            limit = state.categoryLimitInput,
+            onLimitChange = { onEvent(BudgetEvent.OnCategoryLimitChange(it)) },
+            onDismiss = { onEvent(BudgetEvent.ShowCategoryLimitDialog(null, false)) },
+            onConfirm = { onEvent(BudgetEvent.UpdateCategoryLimit) }
+        )
+    }
 }
 
 @Composable
@@ -153,7 +163,10 @@ fun BudgetScreenContent(
         }
 
         items(state.listOfCategory) { category ->
-            CategoryBudgetCard(categoryBudget = category)
+            CategoryBudgetCard(
+                categoryBudget = category,
+                onClick = { onEvent(BudgetEvent.ShowCategoryLimitDialog(category, true)) }
+            )
         }
     }
 }

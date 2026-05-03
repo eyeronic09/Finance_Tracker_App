@@ -14,6 +14,7 @@ interface TransactionRepository {
     suspend fun deleteTransaction(transaction: Transaction)
     suspend fun deleteAllTransactions()
     suspend fun getAlltheCategory(): List<Category>
+    suspend fun updateCategoryBudgetLimit(categoryName: String, limit: Double)
     suspend fun getAllTheTransitionOfCurrentMonths(): List<CategoryBudget>
     suspend fun getPreviousMonthBudget(previousMonthDate: LocalDateTime): Double?
     suspend fun getCurrentMonthsBudgetForRollOver(date: LocalDateTime): Double?

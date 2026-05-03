@@ -6,5 +6,5 @@ data class Budget(
     val budgetId: Int,
     val amount: Double,
     val startDate: LocalDateTime,
-    val endDate : LocalDateTime
+    val endDate : LocalDateTime,
 )

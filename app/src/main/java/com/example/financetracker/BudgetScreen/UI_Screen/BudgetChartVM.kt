@@ -27,7 +27,6 @@ class BudgetChartVM(
     fun fetchCategoryBudgets() {
         viewModelScope.launch {
             val budgets = repository.getAllTheTransitionOfCurrentMonths()
-            
             // Group by category name and map to a List of CategoryBudget objects
             val categoryList = budgets.groupBy { it.categoryName }.map { (name, items) ->
                 CategoryBudget(

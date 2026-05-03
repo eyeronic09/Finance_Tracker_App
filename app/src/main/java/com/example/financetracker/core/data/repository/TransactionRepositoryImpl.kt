@@ -99,6 +99,14 @@ class TransactionRepositoryImpl(
         return categoryDao.getAll().map { it.toDomainForCategory() }
     }
 
+    override suspend fun updateCategoryBudgetLimit(categoryName: String, limit: Double) {
+        val categories = categoryDao.getAll()
+        val category = categories.find { it.name == categoryName }
+        category?.let {
+            categoryDao.update(it.copy(budgetLimit = limit))
+        }
+    }
+
     override suspend fun getAllTheTransitionOfCurrentMonths(): List<CategoryBudget> {
         val transactions = transactionDao.getTransactionsByMonth(LocalDateTime.now())
         
@@ -109,7 +117,8 @@ class TransactionRepositoryImpl(
             CategoryBudget(
                 icon = getCategoryIcon(categoryName),
                 categoryName = categoryName,
-                sum = totalSum
+                sum = totalSum,
+                limit = category?.budgetLimit ?: 0.0
             )
         }
     }

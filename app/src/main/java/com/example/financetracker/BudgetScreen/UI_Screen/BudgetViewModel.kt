@@ -24,7 +24,10 @@ data class BudgetUiState(
     val startDate: LocalDateTime = LocalDateTime.now().withDayOfMonth(1),
     val endDate: LocalDateTime = LocalDateTime.now().plusMonths(1),
     val isAddBudgetDialogVisible: Boolean = false,
-    val newBudgetAmount: Double = 0.0
+    val newBudgetAmount: Double = 0.0,
+    val isCategoryLimitDialogVisible: Boolean = false,
+    val selectedCategory: CategoryBudget? = null,
+    val categoryLimitInput: String = ""
 )
 
 sealed class BudgetEvent{
@@ -32,6 +35,9 @@ sealed class BudgetEvent{
     data class OnUpdateBudget(val amount: Double) : BudgetEvent()
     object AddBudget : BudgetEvent()
     data class ShowAddBudgetDialog(val isVisible: Boolean) : BudgetEvent()
+    data class ShowCategoryLimitDialog(val category: CategoryBudget?, val isVisible: Boolean) : BudgetEvent()
+    data class OnCategoryLimitChange(val limit: String) : BudgetEvent()
+    object UpdateCategoryLimit : BudgetEvent()
 }
 class BudgetViewModel(
     private val repository: TransactionRepository
@@ -54,6 +60,31 @@ class BudgetViewModel(
                     ) 
                 }
             }
+            is BudgetEvent.ShowCategoryLimitDialog -> {
+                _UiState.update {
+                    it.copy(
+                        isCategoryLimitDialogVisible = event.isVisible,
+                        selectedCategory = event.category,
+                        categoryLimitInput = event.category?.limit?.toString() ?: ""
+                    )
+                }
+            }
+            is BudgetEvent.OnCategoryLimitChange -> {
+                _UiState.update { it.copy(categoryLimitInput = event.limit) }
+            }
+            is BudgetEvent.UpdateCategoryLimit -> {
+                updateCategoryLimit()
+            }
+        }
+    }
+
+    private fun updateCategoryLimit() {
+        val category = _UiState.value.selectedCategory ?: return
+        val limit = _UiState.value.categoryLimitInput.toDoubleOrNull() ?: 0.0
+        viewModelScope.launch {
+            repository.updateCategoryBudgetLimit(category.categoryName, limit)
+            calculateCategoryTotals()
+            _UiState.update { it.copy(isCategoryLimitDialogVisible = false) }
         }
     }
 

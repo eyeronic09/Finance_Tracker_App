@@ -1,16 +1,20 @@
 package com.example.financetracker.BudgetScreen.compontent
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +25,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.financetracker.ui.theme.FinanceTrackerTheme
 import com.example.financetracker.BudgetScreen.Domain.model.CategoryBudget
 import java.text.NumberFormat
 import java.util.Locale
@@ -28,7 +36,8 @@ import java.util.Locale
 @Composable
 fun CategoryBudgetCard(
     categoryBudget: CategoryBudget,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     val currencyFormat = remember {
         NumberFormat.getCurrencyInstance(Locale("en", "IN")).apply {
@@ -39,7 +48,8 @@ fun CategoryBudgetCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = RoundedCornerShape(16.dp)
@@ -76,6 +86,20 @@ fun CategoryBudgetCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
+                if (categoryBudget.limit > 0) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    LinearProgressIndicator(
+                        progress = { categoryBudget.progress },
+                        modifier = Modifier.fillMaxWidth(),
+                        color = if (categoryBudget.isOverBudget) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                    Text(
+                        text = "Limit: ${currencyFormat.format(categoryBudget.limit)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
 
             Text(
@@ -85,5 +109,20 @@ fun CategoryBudgetCard(
                 color = MaterialTheme.colorScheme.primary
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CategoryBudgetCardPreview() {
+    FinanceTrackerTheme {
+        CategoryBudgetCard(
+            categoryBudget = CategoryBudget(
+                icon = Icons.Default.ShoppingCart,
+                categoryName = "Shopping",
+                sum = 1500.0,
+                limit = 3000.0
+            )
+        )
     }
 }
