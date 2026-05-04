@@ -34,9 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
+import com.example.financetracker.ui.theme.LocalCurrency
 import java.text.NumberFormat
-import java.util.Locale
-
 
 @Composable
 fun BalanceCard(
@@ -46,8 +45,9 @@ fun BalanceCard(
     totalExpense: Double,
     modifier: Modifier = Modifier
 ) {
-    val currencyFormat = remember {
-        NumberFormat.getCurrencyInstance(Locale("en", "IN")).apply {
+    val currencyInfo = LocalCurrency.current
+    val currencyFormat = remember(currencyInfo) {
+        NumberFormat.getCurrencyInstance(currencyInfo.locale).apply {
             maximumFractionDigits = 0
         }
     }

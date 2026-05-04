@@ -99,6 +99,10 @@ class TransactionRepositoryImpl(
         return categoryDao.getAll().map { it.toDomainForCategory() }
     }
 
+    override suspend fun insertCategory(category: Category) {
+        categoryDao.insert(category.toEntity())
+    }
+
     override suspend fun updateCategoryBudgetLimit(categoryName: String, limit: Double) {
         val categories = categoryDao.getAll()
         val category = categories.find { it.name == categoryName }

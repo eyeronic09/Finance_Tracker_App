@@ -66,6 +66,7 @@ fun TransactionEntity.toDomain(categoryName: String = ""): Transaction {
             categoryId = id,
             name = name,
             type = type.name,
+            budgetLimit = budgetLimit
         )
     }
     
@@ -73,7 +74,8 @@ fun TransactionEntity.toDomain(categoryName: String = ""): Transaction {
         return Category(
             id = categoryId,
             name = name,
-            type = TransactionType.fromString(type)
+            type = TransactionType.fromString(type),
+            budgetLimit = budgetLimit
         )
     }
 fun TransactionEntity.toDomainForBudgets(categoryName: String = "") : CategoryBudget {

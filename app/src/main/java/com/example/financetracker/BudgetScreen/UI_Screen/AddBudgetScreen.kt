@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import com.example.financetracker.ui.theme.LocalCurrency
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +72,7 @@ fun AddBudgetFabScreen(
                     },
                     label = { Text("Budget Amount") },
                     placeholder = { Text("0.00") },
-                    prefix = { Text("₹") },
+                    prefix = { Text(LocalCurrency.current.symbol) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier.fillMaxWidth()
@@ -141,7 +142,7 @@ fun CategoryLimitDialog(
                     onValueChange = onLimitChange,
                     label = { Text("Limit Amount") },
                     placeholder = { Text("0.00") },
-                    prefix = { Text("₹") },
+                    prefix = { Text(LocalCurrency.current.symbol) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     modifier = Modifier.fillMaxWidth()

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -29,18 +31,19 @@ import androidx.compose.ui.unit.sp
 import com.example.financetracker.AddTransaction.compontent.getCategoryIcon
 import com.example.financetracker.core.domain.model.Transaction
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
+import com.example.financetracker.ui.theme.LocalCurrency
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 fun TransactionDetail(
     transaction: Transaction,
     onClick: () -> Unit
 ) {
-    val currencyFormat = remember {
-        NumberFormat.getCurrencyInstance(Locale("en", "IN")).apply {
+    val currencyInfo = LocalCurrency.current
+    val currencyFormat = remember(currencyInfo) {
+        NumberFormat.getCurrencyInstance(currencyInfo.locale).apply {
             maximumFractionDigits = 0
         }
     }
@@ -74,12 +77,22 @@ fun TransactionDetail(
                     .background(iconColor.copy(alpha = 0.1f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = getCategoryIcon(transaction.category),
-                    contentDescription = null,
-                    tint = iconColor,
-                    modifier = Modifier.size(24.dp)
-                )
+                val icon = getCategoryIcon(transaction.category)
+                if (icon == Icons.Default.Category && transaction.category.isNotEmpty()) {
+                    Text(
+                        text = transaction.category.take(1).uppercase(),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = iconColor
+                    )
+                } else {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
 
             // Details (Category & Note)

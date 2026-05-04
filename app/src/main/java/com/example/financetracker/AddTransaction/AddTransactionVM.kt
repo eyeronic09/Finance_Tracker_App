@@ -44,8 +44,11 @@ data class amountChange(val amount: Double) : AddTransactionEvent
     data class OnTransactionNoteChange(val transactionNote: String) : AddTransactionEvent
     object saveTransaction : AddTransactionEvent
 }
-class AddTransactionVM (val categoryRepository: TransactionRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(AddTransactionUiState(selectedDate = LocalDateTime.now()))
+class AddTransactionVM (val categoryRepository: TransactionRepository, initialCategory: String? = null) : ViewModel() {
+    private val _uiState = MutableStateFlow(AddTransactionUiState(
+        selectedDate = LocalDateTime.now(),
+        category = initialCategory ?: ""
+    ))
     val uiState: StateFlow<AddTransactionUiState> = _uiState.asStateFlow()
 
     private val _event = MutableSharedFlow<String>()

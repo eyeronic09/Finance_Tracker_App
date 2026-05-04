@@ -40,19 +40,23 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.example.financetracker.AddTransaction.compontent.RowScrollDropdown
 import com.example.financetracker.AddTransaction.compontent.TransactionTypeRadioButtons
+import com.example.financetracker.ui.theme.LocalCurrency
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
 
-class _AddTranscationScreen : Screen {
+class _AddTranscationScreen(private val initialCategory: String? = null) : Screen {
     @Composable
     override fun Content() {
-        AddTransactionScreenRoute()
+        AddTransactionScreenRoute(initialCategory = initialCategory)
     }
 }
 
 @Composable
-fun AddTransactionScreenRoute(viewModel: AddTransactionVM = koinViewModel()){
+fun AddTransactionScreenRoute(
+    initialCategory: String? = null,
+    viewModel: AddTransactionVM = koinViewModel(parameters = { org.koin.core.parameter.parametersOf(initialCategory) })
+){
     val context = LocalContext.current
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
     val event = viewModel::onEvent
@@ -126,6 +130,7 @@ fun AddTransactionContent(
                 onEvent(AddTransactionEvent.amountChange(amount))
             },
             placeholder = { Text("0.0", fontSize = 32.sp) },
+            prefix = { Text(LocalCurrency.current.symbol, fontSize = 24.sp, fontWeight = FontWeight.Bold) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             textStyle = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
             singleLine = true

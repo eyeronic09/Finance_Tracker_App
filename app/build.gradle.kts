@@ -45,6 +45,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    // Standard Preferences DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     implementation(libs.material3)
     implementation(libs.androidx.compose.foundation)
@@ -72,8 +74,8 @@ dependencies {
     implementation("cafe.adriel.voyager:voyager-screenmodel:$voyagerVersion")
     implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
 
+    //Work
     implementation("androidx.work:work-runtime-ktx:2.11.2")
-
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 
     implementation(libs.androidx.core.ktx)
@@ -90,7 +92,7 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 
-// Test
+    // Test
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:4.5.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")

@@ -30,10 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.financetracker.ui.theme.LocalCurrency
 import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 fun BudgetCard(
@@ -45,8 +45,9 @@ fun BudgetCard(
     modifier: Modifier = Modifier
 ) {
     val dateTimeFormat = remember { DateTimeFormatter.ofPattern("MMM yyyy") }
-    val currencyFormat = remember {
-        NumberFormat.getCurrencyInstance(Locale("en", "IN")).apply {
+    val currencyInfo = LocalCurrency.current
+    val currencyFormat = remember(currencyInfo) {
+        NumberFormat.getCurrencyInstance(currencyInfo.locale).apply {
             maximumFractionDigits = 0
         }
     }

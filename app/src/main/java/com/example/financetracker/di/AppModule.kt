@@ -5,6 +5,9 @@ import com.example.financetracker.AddTransaction.AddTransactionVM
 import com.example.financetracker.BudgetScreen.UI_Screen.BudgetChartVM
 import com.example.financetracker.BudgetScreen.UI_Screen.BudgetViewModel
 import com.example.financetracker.HomeScreen.viewmodel.HomeScreenViewModel
+import com.example.financetracker.SettingScreen.Ui.Screen.ViewModel.CategoryManagementVM
+import com.example.financetracker.SettingScreen.Ui.Screen.ViewModel.SettingVM
+import com.example.financetracker.SettingScreen.domain.repository.SettingPrefReposistory
 import com.example.financetracker.core.data.local.database.AppDatabase
 import com.example.financetracker.core.data.repository.TransactionRepositoryImpl
 import com.example.financetracker.core.domain.repository.TransactionRepository
@@ -41,11 +44,15 @@ val appModule = module {
         )
     }
 
+    single { SettingPrefReposistory(context = androidApplication()) }
+
     // ViewModels
     viewModel { HomeScreenViewModel(repository = get()) }
     viewModel { BudgetViewModel(repository = get()) }
-    viewModel { AddTransactionVM(categoryRepository = get()) }
+    viewModel { (initialCategory: String?) -> AddTransactionVM(categoryRepository = get(), initialCategory = initialCategory) }
     viewModel { BudgetChartVM(repository = get()) }
+    viewModel { SettingVM(settingPrefReposistory = get()) }
+    viewModel { CategoryManagementVM(repository = get()) }
 
     // Worker
     worker { MonthlyRollover(appContext = get(), params = get(), repository = get()) }
