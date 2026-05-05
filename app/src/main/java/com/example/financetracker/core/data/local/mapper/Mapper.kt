@@ -6,8 +6,10 @@ import com.example.financetracker.BudgetScreen.Domain.model.Budget
 import com.example.financetracker.BudgetScreen.Domain.model.CategoryBudget
 import com.example.financetracker.core.data.local.entity.BudgetEntity
 import com.example.financetracker.core.data.local.entity.CategoryEntity
+import com.example.financetracker.core.data.local.entity.GoalEntity
 import com.example.financetracker.core.data.local.entity.TransactionEntity
 import com.example.financetracker.core.domain.model.Category
+import com.example.financetracker.core.domain.model.Goal
 import com.example.financetracker.core.domain.model.Transaction
 
 fun TransactionEntity.toDomainForCategory(categoryName: String): Transaction {
@@ -43,45 +45,66 @@ fun TransactionEntity.toDomain(categoryName: String = ""): Transaction {
     )
 }
 
-    fun BudgetEntity.toDomainForCategory(): Budget {
-        return Budget(
-            budgetId = budgetId,
-            amount = amount,
-            startDate = startDate,
-            endDate = endDate
-        )
-    }
+fun BudgetEntity.toDomainForCategory(): Budget {
+    return Budget(
+        budgetId = budgetId,
+        amount = amount,
+        startDate = startDate,
+        endDate = endDate
+    )
+}
 
-    fun Budget.toEntity(): BudgetEntity {
-        return BudgetEntity(
-            budgetId = budgetId,
-            amount = amount,
-            startDate = startDate,
-            endDate = endDate
-        )
-    }
+fun Budget.toEntity(): BudgetEntity {
+    return BudgetEntity(
+        budgetId = budgetId,
+        amount = amount,
+        startDate = startDate,
+        endDate = endDate
+    )
+}
 
-    fun Category.toEntity(): CategoryEntity {
-        return CategoryEntity(
-            categoryId = id,
-            name = name,
-            type = type.name,
-            budgetLimit = budgetLimit
-        )
-    }
-    
-    fun CategoryEntity.toDomainForCategory(): Category {
-        return Category(
-            id = categoryId,
-            name = name,
-            type = TransactionType.fromString(type),
-            budgetLimit = budgetLimit
-        )
-    }
-fun TransactionEntity.toDomainForBudgets(categoryName: String = "") : CategoryBudget {
+fun Category.toEntity(): CategoryEntity {
+    return CategoryEntity(
+        categoryId = id,
+        name = name,
+        type = type.name,
+        budgetLimit = budgetLimit
+    )
+}
+
+fun CategoryEntity.toDomainForCategory(): Category {
+    return Category(
+        id = categoryId,
+        name = name,
+        type = TransactionType.fromString(type),
+        budgetLimit = budgetLimit
+    )
+}
+
+fun TransactionEntity.toDomainForBudgets(categoryName: String = ""): CategoryBudget {
     return CategoryBudget(
         icon = getCategoryIcon(categoryName),
         categoryName = categoryName,
         sum = amount
+    )
+}
+
+fun GoalEntity.toDomain(): Goal {
+    return Goal(
+        id = goalId,
+        name = name,
+        targetAmount = targetAmount,
+        savedAmount = savedAmount,
+        deadline = deadline
+    )
+}
+
+fun Goal.toEntity(): GoalEntity {
+    return GoalEntity(
+        goalId = id,
+        name = name,
+        targetAmount = targetAmount,
+        savedAmount = savedAmount,
+        deadline = deadline
     )
 }

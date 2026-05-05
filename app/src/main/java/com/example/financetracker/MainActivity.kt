@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -28,6 +27,7 @@ import com.example.financetracker.BudgetScreen.UI_Screen.BudgetTab
 import com.example.financetracker.HomeScreen.HomeTab
 import com.example.financetracker.SettingScreen.Ui.Screen.SettingTab
 import com.example.financetracker.SettingScreen.Ui.Screen.ViewModel.SettingVM
+import com.example.financetracker.goals.GoalsTab
 import com.example.financetracker.ui.theme.FinanceTrackerTheme
 import com.example.financetracker.ui.theme.LocalCurrency
 import com.example.financetracker.ui.theme.getCurrencyInfo
@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
                                 NavigationBar {
                                     TabNavigationItem(HomeTab)
                                     TabNavigationItem(BudgetTab)
+                                    TabNavigationItem(GoalsTab)
                                     TabNavigationItem(SettingTab)
                                 }
                             },
